@@ -1,5 +1,4 @@
 import Link from "next/link";
-import { describeDuration, discountPercent, formatBdt } from "@/lib/subscriptions";
 
 export interface ShowcaseItem {
   id: string;
@@ -15,77 +14,52 @@ export interface ShowcaseItem {
 }
 
 /**
- * Big picture cards for the home page, as opposed to the compact rows used
- * in the catalogue. Worth the extra space here because this is where someone
- * decides whether the site is worth their money.
+ * 6-column poster cards inspired by RMT Game Shop layout:
+ * Tall cover image with top-right orange badge, white footer title bar.
  */
 export function ProductShowcase({ items }: { items: ShowcaseItem[] }) {
   if (items.length === 0) return null;
 
   return (
-    <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-      {items.map((item) => {
-        const off = discountPercent(item.cheapestPrice, item.cheapestCompareAt);
-
-        return (
-          <article key={item.id} className="showcase-card">
-            <div className="showcase-media" data-image={item.thumbnail_url ? "yes" : "no"}>
-              {item.thumbnail_url ? (
-                // eslint-disable-next-line @next/next/no-img-element
-                <img src={item.thumbnail_url} alt="" />
-              ) : (
-                <span className="showcase-initials">
-                  {item.name.slice(0, 2).toUpperCase()}
-                </span>
-              )}
-              <span className="showcase-tag">
-                {item.slug.startsWith("windows")
-                  ? "Key"
-                  : ["pubg", "free-fire", "mobile-legends", "genshin", "game-"].some((s) =>
-                        item.slug.startsWith(s),
-                      )
-                    ? "Top-up"
-                    : item.delivery_type === "invite"
-                      ? "Invite"
-                      : "Login"}
-              </span>
-            </div>
-
-            <div className="showcase-body">
-              <h3 className="text-lg font-black text-white">{item.name}</h3>
-              {item.tagline && (
-                <p className="muted mt-2 line-clamp-2 text-sm leading-6">{item.tagline}</p>
-              )}
-
-              <div className="mt-4 flex flex-wrap items-center gap-2">
-                <span className="badge badge-neutral">
-                  {describeDuration(item.cheapestDurationDays)}
-                </span>
-                {off ? <span className="off-badge">−{off}%</span> : null}
+    <div className="grid grid-cols-2 gap-3.5 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 sm:gap-5">
+      {items.map((item) => (
+        <Link
+          key={item.id}
+          href={`/subscriptions/${item.slug}`}
+          className="group relative flex flex-col overflow-hidden rounded-[18px] border border-white/[.08] bg-[#121620] transition-all duration-200 hover:-translate-y-1.5 hover:border-[#e5243b]/50 hover:shadow-xl hover:shadow-[#e5243b]/10"
+        >
+          {/* ---- Cover Image Area (Aspect 3/4) ---- */}
+          <div className="relative aspect-[3/4] w-full overflow-hidden bg-[#161a25]">
+            {item.thumbnail_url ? (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img
+                src={item.thumbnail_url}
+                alt={item.name}
+                className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+              />
+            ) : (
+              <div className="flex h-full w-full items-center justify-center font-black text-white/30 text-3xl">
+                {item.name.slice(0, 2).toUpperCase()}
               </div>
+            )}
 
-              <div className="mt-5">
-                <span className="text-2xl font-black text-white">
-                  {formatBdt(item.cheapestPrice)}
-                </span>
-                <span className="price-unit">from</span>
-                {item.cheapestCompareAt && (
-                  <s className="muted mt-0.5 block text-sm">
-                    {formatBdt(item.cheapestCompareAt)}
-                  </s>
-                )}
-              </div>
+            {/* ---- Top-Right Orange Badge (RMT Game Shop style) ---- */}
+            <span className="absolute top-2.5 right-2.5 flex h-6 w-6 items-center justify-center rounded-full bg-[#f97316] text-white shadow-md">
+              <svg className="h-3 w-3 fill-current" viewBox="0 0 20 20">
+                <path d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" />
+              </svg>
+            </span>
+          </div>
 
-              <Link
-                href={`/subscriptions/${item.slug}`}
-                className="btn-primary mt-5 w-full justify-center"
-              >
-                View details
-              </Link>
-            </div>
-          </article>
-        );
-      })}
+          {/* ---- White Footer Bar ---- */}
+          <div className="flex items-center justify-center bg-white px-2 py-3 text-center">
+            <h3 className="line-clamp-1 text-xs font-bold text-slate-900 sm:text-sm">
+              {item.name}
+            </h3>
+          </div>
+        </Link>
+      ))}
     </div>
   );
 }
+

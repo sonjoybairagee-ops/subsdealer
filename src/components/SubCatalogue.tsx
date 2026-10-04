@@ -191,7 +191,7 @@ export function SubCatalogue({
                   ))}
                 </div>
               ) : (
-                <div className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                <div className="mt-4 grid grid-cols-2 gap-3.5 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 sm:gap-5">
                   {items.map((p) => (
                     <ProductCard key={p.id} product={p} />
                   ))}
@@ -207,7 +207,7 @@ export function SubCatalogue({
           ))}
         </div>
       ) : (
-        <div className="mt-7 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="mt-7 grid grid-cols-2 gap-3.5 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 sm:gap-5">
           {visible.map((p) => (
             <ProductCard key={p.id} product={p} />
           ))}
@@ -257,53 +257,39 @@ function ProductRow({ product }: { product: CatalogueProduct }) {
 }
 
 function ProductCard({ product }: { product: CatalogueProduct }) {
-  const off = discountPercent(product.cheapestPrice, product.cheapestCompareAt);
-
   return (
-    <Link href={`/subscriptions/${product.slug}`} className="card card-hover flex flex-col p-6">
-      <div className="flex items-start gap-4">
-        <span className="product-logo" data-image={product.thumbnail_url ? "yes" : "no"}>
-          {product.thumbnail_url ? (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img src={product.thumbnail_url} alt="" />
-          ) : (
-            product.name.slice(0, 2).toUpperCase()
-          )}
-        </span>
-        <div className="min-w-0">
-          <div className="flex flex-wrap items-center gap-2">
-            <h3 className="font-black text-white">{product.name}</h3>
-            {off ? <span className="off-badge">−{off}%</span> : null}
+    <Link
+      href={`/subscriptions/${product.slug}`}
+      className="group relative flex flex-col overflow-hidden rounded-[18px] border border-white/[.08] bg-[#121620] transition-all duration-200 hover:-translate-y-1.5 hover:border-[#e5243b]/50 hover:shadow-xl hover:shadow-[#e5243b]/10"
+    >
+      {/* Cover Image */}
+      <div className="relative aspect-[3/4] w-full overflow-hidden bg-[#161a25]">
+        {product.thumbnail_url ? (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img
+            src={product.thumbnail_url}
+            alt={product.name}
+            className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+          />
+        ) : (
+          <div className="flex h-full w-full items-center justify-center font-black text-white/30 text-3xl">
+            {product.name.slice(0, 2).toUpperCase()}
           </div>
-          {product.tagline && (
-            <p className="muted mt-1 text-sm leading-6">{product.tagline}</p>
-          )}
-        </div>
+        )}
+
+        {/* Orange Circular Badge */}
+        <span className="absolute top-2.5 right-2.5 flex h-6 w-6 items-center justify-center rounded-full bg-[#f97316] text-white shadow-md">
+          <svg className="h-3 w-3 fill-current" viewBox="0 0 20 20">
+            <path d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" />
+          </svg>
+        </span>
       </div>
 
-      {product.features.length > 0 && (
-        <ul className="mt-4 space-y-1.5">
-          {product.features.slice(0, 3).map((f) => (
-            <li key={f} className="flex gap-2 text-sm text-[#c7ccd6]">
-              <span className="shrink-0 text-[#ff7585]">✓</span>
-              <span className="min-w-0 truncate">{f}</span>
-            </li>
-          ))}
-        </ul>
-      )}
-
-      <div className="mt-auto flex items-end justify-between gap-3 border-t border-white/[.06] pt-5">
-        <div>
-          <p className="muted text-xs">
-            From · {describeDuration(product.cheapestDurationDays)}
-          </p>
-          <p className="text-2xl font-black text-[#e5243b]">
-            {formatBdt(product.cheapestPrice)}
-          </p>
-        </div>
-        <span className="text-sm font-bold text-[#e5243b]">
-          {product.planCount} plan{product.planCount === 1 ? "" : "s"} →
-        </span>
+      {/* White Footer Bar */}
+      <div className="flex items-center justify-center bg-white px-2 py-3 text-center">
+        <h3 className="line-clamp-1 text-xs font-bold text-slate-900 sm:text-sm">
+          {product.name}
+        </h3>
       </div>
     </Link>
   );
