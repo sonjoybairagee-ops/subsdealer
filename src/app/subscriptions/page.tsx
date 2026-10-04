@@ -44,7 +44,7 @@ export default async function SubscriptionsPage({
         slug: p.slug,
         name: p.name,
         tagline: p.tagline,
-        thumbnail_url: p.thumbnail_url,
+        thumbnail_url: p.thumbnail_url || `/products/${p.slug}.png`,
         category: p.category,
         delivery_type: p.delivery_type ?? "credential",
         features: Array.isArray(p.features) ? p.features : [],
