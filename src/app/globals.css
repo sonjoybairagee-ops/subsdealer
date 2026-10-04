@@ -1,0 +1,1054 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ===========================================================================
+   Subdealer design system
+   ---------------------------------------------------------------------------
+   Every class here is one the components actually use. Nothing decorative is
+   left over — if a rule exists, something renders with it.
+   =========================================================================== */
+
+:root {
+  --bg: #08080a;
+  --panel: #101013;
+  --line: rgba(255, 255, 255, 0.08);
+  --text: #e9eaee;
+  --muted: #8d8f99;
+
+  /* Accent. --accent-rgb exists so alpha variants stay in one place, and
+     --accent-ink is whatever text must sit ON the accent colour. Change
+     these four lines and the whole site follows. */
+  --accent: #e5243b;
+  --accent-rgb: 229 36 59;
+  --accent-soft: #ff8f9b;
+  --accent-ink: #ffffff;
+
+  --warn: #ffcf8c;
+  --danger: #ff9d9d;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  padding: 0;
+  margin: 0;
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family:
+    -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial,
+    "Noto Sans Bengali", sans-serif;
+  font-size: 15px;
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+  min-height: 100vh;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+/* ---------- layout ---------- */
+
+.shell {
+  width: min(100% - 32px, 1180px);
+  margin-inline: auto;
+}
+
+/* Sidebar + content. Collapses to a single column on small screens, where the
+   sidebar becomes a horizontally scrolling strip instead of eating the page. */
+.dashboard-grid {
+  display: grid;
+  gap: 20px;
+  grid-template-columns: 236px minmax(0, 1fr);
+  align-items: start;
+}
+
+.sidebar {
+  position: sticky;
+  top: 16px;
+}
+
+@media (max-width: 900px) {
+  .dashboard-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .sidebar {
+    position: static;
+    display: flex;
+    gap: 6px;
+    overflow-x: auto;
+    padding: 8px;
+  }
+  .sidebar > div {
+    display: flex;
+    gap: 6px;
+    margin-top: 0 !important;
+  }
+  .sidebar a {
+    white-space: nowrap;
+  }
+}
+
+/* ---------- surfaces ---------- */
+
+.card {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+}
+
+.card-hover {
+  transition:
+    border-color 0.18s ease,
+    transform 0.18s ease;
+}
+.card-hover:hover {
+  border-color: rgb(var(--accent-rgb) / 0.4);
+  transform: translateY(-2px);
+}
+
+/* ---------- type ---------- */
+
+.eyebrow {
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
+.muted {
+  color: var(--muted);
+}
+
+/* ---------- buttons ---------- */
+
+.btn-primary,
+.btn-secondary,
+.btn-danger {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 40px;
+  padding: 0 16px;
+  border-radius: 10px;
+  border: 1px solid transparent;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition:
+    background 0.15s ease,
+    border-color 0.15s ease,
+    opacity 0.15s ease;
+  white-space: nowrap;
+}
+
+.btn-primary {
+  background: var(--accent);
+  color: var(--accent-ink);
+}
+.btn-primary:hover:not(:disabled) {
+  background: #f0394f;
+}
+
+.btn-secondary {
+  background: rgba(255, 255, 255, 0.045);
+  border-color: var(--line);
+  color: var(--text);
+}
+.btn-secondary:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.09);
+}
+
+.btn-danger {
+  background: rgba(255, 107, 107, 0.12);
+  border-color: rgba(255, 107, 107, 0.3);
+  color: #ff9d9d;
+}
+.btn-danger:hover:not(:disabled) {
+  background: rgba(255, 107, 107, 0.2);
+}
+
+.btn-primary:disabled,
+.btn-secondary:disabled,
+.btn-danger:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* ---------- forms ---------- */
+
+.label {
+  display: block;
+  margin-bottom: 6px;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  color: #aab2c0;
+}
+
+.input {
+  display: block;
+  width: 100%;
+  min-height: 42px;
+  margin-top: 2px;
+  padding: 9px 12px;
+  border-radius: 10px;
+  border: 1px solid var(--line);
+  background: rgba(255, 255, 255, 0.025);
+  color: var(--text);
+  font-size: 14px;
+  font-family: inherit;
+}
+
+.input:focus {
+  outline: none;
+  border-color: rgb(var(--accent-rgb) / 0.55);
+  background: rgb(var(--accent-rgb) / 0.04);
+}
+
+.input::placeholder {
+  color: #5f6775;
+}
+
+select.input {
+  cursor: pointer;
+}
+
+/* The dropdown list itself is drawn by the operating system, which does not
+   inherit the page's dark theme — so the options have to be coloured
+   explicitly or they come out as pale text on a white popup. */
+.input option,
+.input optgroup {
+  background-color: #15161b;
+  color: #e9eaee;
+}
+
+.input option:disabled {
+  color: #6b7280;
+}
+
+textarea.input {
+  resize: vertical;
+  line-height: 1.6;
+}
+
+/* A revealed credential renders inside <code class="input">, which must not
+   behave like a block form field. */
+code.input {
+  display: flex;
+  align-items: center;
+  margin-top: 0;
+}
+
+input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  accent-color: var(--accent);
+  cursor: pointer;
+}
+
+/* ---------- badges ---------- */
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 25px;
+  padding: 0 9px;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  background: rgba(255, 255, 255, 0.035);
+  color: #c8cdd7;
+  font-size: 12px;
+  font-weight: 650;
+  white-space: nowrap;
+}
+
+.badge-green {
+  color: var(--accent-soft);
+  border-color: rgb(var(--accent-rgb) / 0.25);
+  background: rgb(var(--accent-rgb) / 0.08);
+}
+
+.badge-warn {
+  color: var(--warn);
+  border-color: rgba(255, 179, 71, 0.28);
+  background: rgba(255, 179, 71, 0.09);
+}
+
+.badge-danger {
+  color: var(--danger);
+  border-color: rgba(255, 107, 107, 0.28);
+  background: rgba(255, 107, 107, 0.09);
+}
+
+.badge-neutral {
+  color: #9aa1ad;
+  border-color: rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.04);
+}
+
+/* ---------- tables ---------- */
+
+.table-wrap {
+  overflow-x: auto;
+}
+
+table.data {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+table.data th {
+  text-align: left;
+  padding: 12px 14px;
+  border-bottom: 1px solid var(--line);
+  color: #7f8798;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+table.data td {
+  padding: 13px 14px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  vertical-align: middle;
+}
+
+table.data tr:last-child td {
+  border-bottom: 0;
+}
+
+/* ---------- floating pill header ---------- */
+
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: 40;
+  padding: 14px 0;
+}
+
+.site-header-inner {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  min-height: 56px;
+  padding: 8px 10px 8px 18px;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  background: rgba(16, 19, 26, 0.82);
+  backdrop-filter: blur(16px);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.45);
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 800;
+  font-size: 17px;
+  letter-spacing: -0.015em;
+}
+
+.logo-tile {
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  flex-shrink: 0;
+  padding: 6px;
+  border-radius: 10px;
+  background: var(--accent);
+  color: var(--accent-ink);
+}
+
+.logo-tile svg {
+  width: 100%;
+  height: 100%;
+}
+
+.site-nav {
+  display: none;
+  gap: 2px;
+  margin: 0 auto;
+}
+
+.site-nav a {
+  padding: 8px 14px;
+  border-radius: 999px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #9aa2b1;
+  transition: color 0.15s ease, background 0.15s ease;
+}
+
+.site-nav a:hover {
+  background: rgba(255, 255, 255, 0.055);
+  color: #fff;
+}
+
+@media (min-width: 900px) {
+  .site-nav {
+    display: flex;
+  }
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-left: auto;
+}
+
+@media (min-width: 900px) {
+  .header-actions {
+    margin-left: 0;
+  }
+}
+
+.header-actions .btn-primary,
+.header-actions .btn-secondary {
+  min-height: 38px;
+  border-radius: 999px;
+  padding: 0 18px;
+}
+
+/* ---------- hero ---------- */
+
+.hero {
+  position: relative;
+  overflow: hidden;
+  text-align: center;
+  padding: 72px 0 60px;
+}
+
+/* Soft glow behind the headline. Pointer-events off so it never eats clicks. */
+.hero::before {
+  content: "";
+  position: absolute;
+  inset: -40% 20% auto;
+  height: 520px;
+  pointer-events: none;
+  background: radial-gradient(
+    ellipse at center,
+    rgb(var(--accent-rgb) / 0.16),
+    transparent 62%
+  );
+}
+
+.hero > * {
+  position: relative;
+}
+
+.hero-title {
+  margin: 0 auto;
+  max-width: 14ch;
+  font-size: clamp(42px, 8vw, 86px);
+  font-weight: 800;
+  line-height: 1.02;
+  letter-spacing: -0.035em;
+  background: linear-gradient(180deg, #ffffff 28%, #8d94a3 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.hero-sub {
+  margin: 26px auto 0;
+  max-width: 48ch;
+  font-size: clamp(15px, 2vw, 18px);
+  line-height: 1.65;
+  color: var(--muted);
+}
+
+/* Rating / social-proof pill */
+.proof-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 30px;
+  padding: 7px 16px 7px 8px;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  background: rgba(255, 255, 255, 0.035);
+  font-size: 13px;
+}
+
+.proof-avatars {
+  display: flex;
+}
+
+.proof-avatars span {
+  display: grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  margin-right: -8px;
+  border-radius: 999px;
+  border: 2px solid #0d1016;
+  font-size: 11px;
+  font-weight: 800;
+  color: var(--accent-ink);
+}
+
+.trust-row {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px 26px;
+  margin-top: 30px;
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.trust-row > span {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+}
+
+/* ---------- brand marquee ---------- */
+
+.marquee {
+  position: relative;
+  overflow: hidden;
+  padding: 8px 0;
+  /* fade the ends so logos slide out of view instead of being cut off */
+  mask-image: linear-gradient(90deg, transparent, #000 9%, #000 91%, transparent);
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 9%, #000 91%, transparent);
+}
+
+.marquee-track {
+  display: flex;
+  gap: 12px;
+  width: max-content;
+  animation: marquee-scroll 42s linear infinite;
+}
+
+.marquee:hover .marquee-track {
+  animation-play-state: paused;
+}
+
+/* The track holds the list twice, so -50% lands exactly on the seam. */
+@keyframes marquee-scroll {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .marquee-track {
+    animation: none;
+  }
+  .marquee {
+    overflow-x: auto;
+  }
+}
+
+.marquee-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 11px 18px;
+  border-radius: 12px;
+  border: 1px solid var(--line);
+  background: rgba(255, 255, 255, 0.025);
+  font-size: 14px;
+  font-weight: 600;
+  color: #c3c9d4;
+  white-space: nowrap;
+}
+
+.marquee-logo {
+  display: grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 7px;
+  background: rgb(var(--accent-rgb) / 0.12);
+  color: var(--accent);
+  font-size: 10px;
+  font-weight: 900;
+}
+
+/* ---------- search + filter chips ---------- */
+
+.search-wrap {
+  position: relative;
+}
+
+.search-wrap .input {
+  min-height: 54px;
+  padding-left: 46px;
+  border-radius: 14px;
+  font-size: 15px;
+}
+
+.search-icon {
+  position: absolute;
+  left: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #5f6775;
+  pointer-events: none;
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 8px 15px;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  background: rgba(255, 255, 255, 0.03);
+  color: #c3c9d4;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+}
+
+.chip:hover {
+  background: rgba(255, 255, 255, 0.07);
+  color: #fff;
+}
+
+.chip[aria-pressed="true"] {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--accent-ink);
+}
+
+.chip-count {
+  font-size: 11px;
+  font-weight: 800;
+  opacity: 0.65;
+}
+
+.view-toggle {
+  display: inline-flex;
+  gap: 4px;
+  padding: 4px;
+  border-radius: 11px;
+  border: 1px solid var(--line);
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.view-toggle button {
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 30px;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: #8b93a3;
+  cursor: pointer;
+}
+
+.view-toggle button[aria-pressed="true"] {
+  background: var(--accent);
+  color: var(--accent-ink);
+}
+
+/* ---------- product row (list view) ---------- */
+
+.product-row {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  padding: 15px 17px;
+  border-radius: 14px;
+  border: 1px solid var(--line);
+  background: var(--panel);
+  transition: border-color 0.18s ease, background 0.18s ease;
+}
+
+.product-row:hover {
+  border-color: rgb(var(--accent-rgb) / 0.42);
+  background: #10141b;
+}
+
+.product-row:hover .product-row-go {
+  background: var(--accent);
+  color: var(--accent-ink);
+}
+
+.product-logo {
+  display: grid;
+  place-items: center;
+  width: 50px;
+  height: 50px;
+  flex-shrink: 0;
+  overflow: hidden;
+  border-radius: 13px;
+  background: rgb(var(--accent-rgb) / 0.1);
+  color: var(--accent);
+  font-size: 15px;
+  font-weight: 900;
+}
+
+/* The thumbnails are 16:9 banners, so letterbox them inside the square tile
+   rather than cropping into the middle of a wordmark. */
+.product-logo img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.product-row-go {
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  flex-shrink: 0;
+  border-radius: 10px;
+  border: 1px solid var(--line);
+  background: rgba(255, 255, 255, 0.04);
+  color: #c3c9d4;
+  transition: background 0.18s ease, color 0.18s ease;
+}
+
+.price-now {
+  font-size: 19px;
+  font-weight: 900;
+  color: #fff;
+}
+
+.price-unit {
+  margin-left: 4px;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.price-was {
+  margin-left: 7px;
+  font-size: 13px;
+  color: #6b7280;
+  text-decoration: line-through;
+}
+
+.off-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: rgb(var(--accent-rgb) / 0.14);
+  color: var(--accent-soft);
+  font-size: 11px;
+  font-weight: 800;
+}
+
+/* ---------- stepped checkout ---------- */
+
+.steps {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+  margin: 0 auto;
+  max-width: 420px;
+}
+
+.step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.step-dot {
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.step[data-state="done"] .step-dot,
+.step[data-state="active"] .step-dot {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--accent-ink);
+}
+
+.step-label {
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.step[data-state="active"] .step-label,
+.step[data-state="done"] .step-label {
+  color: var(--accent);
+}
+
+.step-line {
+  flex: 1;
+  height: 1px;
+  margin: 0 6px 22px;
+  background: var(--line);
+}
+
+.step-line[data-state="done"] {
+  background: var(--accent);
+}
+
+/* Plan cards, the row of MONTHLY / 3 MONTHS / 12 MONTHS tiles */
+.plan-tile {
+  position: relative;
+  padding: 14px 14px 13px;
+  border-radius: 14px;
+  border: 1px solid var(--line);
+  background: rgba(255, 255, 255, 0.022);
+  text-align: left;
+  cursor: pointer;
+  transition: border-color 0.16s ease, background 0.16s ease;
+}
+
+.plan-tile:hover {
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+.plan-tile[aria-pressed="true"] {
+  border-color: var(--accent);
+  background: rgb(var(--accent-rgb) / 0.08);
+  box-shadow: 0 0 0 1px var(--accent) inset, 0 0 26px rgb(var(--accent-rgb) / 0.14);
+}
+
+.plan-tile[aria-pressed="true"]::after {
+  content: "";
+  position: absolute;
+  top: 11px;
+  right: 11px;
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+  background: var(--accent);
+}
+
+.plan-tile-label {
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
+/* Sticky total bar at the bottom of the checkout column */
+.checkout-total {
+  position: sticky;
+  bottom: 0;
+  margin-top: 18px;
+  padding: 16px;
+  border-radius: 14px;
+  border: 1px solid var(--line);
+  background: rgba(13, 16, 22, 0.94);
+  backdrop-filter: blur(10px);
+}
+
+/* Inputs with a leading icon, as in the details step */
+.field-icon {
+  position: relative;
+}
+
+.field-icon .input {
+  padding-left: 42px;
+}
+
+.field-icon > svg,
+.field-icon > .field-icon-glyph {
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #5f6775;
+  pointer-events: none;
+}
+
+/* ---------- misc ---------- */
+
+.grid-lines {
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.022) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.022) 1px, transparent 1px);
+  background-size: 34px 34px;
+}
+
+::selection {
+  background: rgb(var(--accent-rgb) / 0.3);
+}
+
+/* Firefox needs this spelled out separately or long tokens overflow. */
+code,
+pre {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  word-break: break-word;
+}
+
+/* ---------- showcase card (image on top, CTA at the bottom) ---------- */
+
+.showcase-card {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border-radius: 16px;
+  border: 1px solid var(--line);
+  background: var(--panel);
+  transition: border-color 0.2s ease, transform 0.2s ease;
+}
+
+.showcase-card:hover {
+  border-color: rgb(var(--accent-rgb) / 0.45);
+  transform: translateY(-3px);
+}
+
+.showcase-media {
+  position: relative;
+  display: grid;
+  place-items: center;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  background:
+    radial-gradient(ellipse at 50% 120%, rgb(var(--accent-rgb) / 0.2), transparent 70%),
+    #16161b;
+}
+
+.showcase-media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Melts the bottom of the artwork into the card instead of ending on a hard
+   edge. Sits above the image, below the corner tag. */
+.showcase-media[data-image="yes"]::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(
+    to bottom,
+    rgb(16 16 19 / 0) 52%,
+    rgb(16 16 19 / 0.55) 82%,
+    var(--panel) 100%
+  );
+}
+
+/* Fallback when a product has no thumbnail yet — initials rather than a
+   broken image or an empty grey box. */
+.showcase-initials {
+  font-size: 44px;
+  font-weight: 900;
+  letter-spacing: -0.03em;
+  color: rgb(var(--accent-rgb) / 0.55);
+}
+
+.showcase-tag {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  padding: 4px 10px;
+  border-radius: 7px;
+  background: var(--accent);
+  color: var(--accent-ink);
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.showcase-body {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  padding: 20px;
+}
+
+/* ---------- reviews ---------- */
+
+.review-card {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 22px;
+  border-radius: 16px;
+  border: 1px solid var(--line);
+  background: var(--panel);
+}
+
+.review-stars {
+  color: #ffc53d;
+  font-size: 13px;
+  letter-spacing: 2px;
+}
+
+.review-avatar {
+  display: grid;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  flex-shrink: 0;
+  border-radius: 999px;
+  background: rgb(var(--accent-rgb) / 0.14);
+  color: var(--accent-soft);
+  font-size: 14px;
+  font-weight: 800;
+}
+
+.section-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 16px;
+  border-radius: 999px;
+  border: 1px solid rgb(var(--accent-rgb) / 0.3);
+  background: rgb(var(--accent-rgb) / 0.09);
+  color: var(--accent-soft);
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+/* Two-tone section heading: white line, then an accent line underneath. */
+.section-title {
+  font-size: clamp(30px, 5vw, 50px);
+  font-weight: 800;
+  line-height: 1.08;
+  letter-spacing: -0.03em;
+}
+
+.section-title em {
+  display: block;
+  font-style: normal;
+  color: var(--accent);
+}

@@ -1,0 +1,8 @@
+<svg width="256" height="256" viewBox="0 0 256 256" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <title>Subdealer</title>
+  <rect width="256" height="256" rx="60" fill="#e5243b"/>
+  <g transform="translate(42.667 42.667) scale(7.1111)">
+    <path d="M4 4h10a6 6 0 0 1 0 12H9.5" stroke="#fff" stroke-width="3.4" stroke-linecap="round"/>
+    <path d="M20 20H10a6 6 0 0 1 0-12h4.5" stroke="#fff" stroke-width="3.4" stroke-linecap="round" opacity="0.45"/>
+  </g>
+</svg>
