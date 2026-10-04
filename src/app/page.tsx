@@ -163,47 +163,7 @@ export default async function HomePage() {
       </section>
 
 
-      {/* ---------------- faq ---------------- */}
-      <section id="faq" className="shell scroll-mt-24 py-12">
-        <h2 className="text-2xl font-black tracking-tight">Common questions</h2>
-        <div className="mt-6 grid gap-4 md:grid-cols-2">
-          {[
-            [
-              "How fast is activation?",
-              "Usually a few hours during the day. Every payment is checked by a person against our bKash statement before anything is handed over.",
-            ],
-            [
-              "What if the account stops working?",
-              "We replace it. Contact support and we move you to a fresh account or send a new invite — your dashboard updates straight away.",
-            ],
-            [
-              "Do I get my own account or a shared one?",
-              "It depends on the product, and each page says which. Some are invites to your own account, some are a ready-made login shared with a few other people.",
-            ],
-            [
-              "Can I pay with anything other than bKash?",
-              "Not right now. bKash keeps it simple and avoids card fees, which is part of why the prices are what they are.",
-            ],
-          ].map(([q, a]) => (
-            <div key={q} className="card p-6">
-              <h3 className="font-bold text-white">{q}</h3>
-              <p className="muted mt-2 text-sm leading-6">{a}</p>
-            </div>
-          ))}
-        </div>
 
-        <div className="card mt-8 flex flex-wrap items-center justify-between gap-4 p-7">
-          <div>
-            <p className="font-black text-white">Ready to start?</p>
-            <p className="muted mt-1 text-sm">
-              Create an account, pick a plan, pay with bKash.
-            </p>
-          </div>
-          <Link href="/subscriptions" className="btn-primary">
-            Browse {BRAND} →
-          </Link>
-        </div>
-      </section>
 
       <Reviews />
     </>

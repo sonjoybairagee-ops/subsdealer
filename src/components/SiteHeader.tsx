@@ -9,7 +9,6 @@ const NAV = [
   ["/subscriptions", "Subscriptions"],
   ["/subscriptions?category=ai", "AI"],
   ["/subscriptions?category=games", "Game Top-Up"],
-  ["/#faq", "FAQ"],
 ];
 
 export async function SiteHeader() {
