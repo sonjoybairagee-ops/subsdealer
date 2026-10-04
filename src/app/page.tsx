@@ -96,47 +96,12 @@ function inferCategory(p: any): string {
 
   return (
     <>
-      {/* ---------------- hero section (RMT Game Shop 2-Column Grid) ---------------- */}
+      {/* ---------------- hero section (Full-width Peek Carousel) ---------------- */}
       <section className="hero">
-        <div className="shell flex flex-col gap-4 lg:flex-row lg:items-start">
-          {/* Main Slider (Left ~70%) */}
-          <div className="flex-1 min-w-0">
-            <HeroSlider />
-          </div>
-
-          {/* Side Promo Banner (Right ~30% on Desktop) */}
-          <div className="w-full shrink-0 lg:w-[320px] xl:w-[350px]">
-            <Link
-              href="/subscriptions/canva-pro"
-              className="group relative flex h-full min-h-[220px] w-full flex-col justify-between overflow-hidden rounded-[20px] border border-white/[.1] bg-gradient-to-br from-[#1e0a38] via-[#0d1628] to-[#0a1b14] p-6 text-left transition duration-300 hover:border-[#e5243b]/50 hover:shadow-xl hover:shadow-[#e5243b]/10"
-            >
-              <div className="relative z-10">
-                <span className="inline-flex items-center gap-1.5 rounded-full bg-[#f97316] px-3 py-1 text-[11px] font-extrabold uppercase tracking-wider text-white shadow-sm">
-                  ⚡ Hot Deal
-                </span>
-                <h3 className="mt-3 text-2xl font-black leading-tight text-white transition group-hover:text-[#e5243b]">
-                  Canva Pro &amp; ChatGPT Plus
-                </h3>
-                <p className="mt-2 text-xs leading-relaxed text-white/70">
-                  Instant activation in 2-5 minutes via bKash. 100% genuine access guaranteed!
-                </p>
-              </div>
-
-              <div className="relative z-10 mt-6 flex items-center justify-between border-t border-white/10 pt-4">
-                <div>
-                  <span className="block text-[11px] font-semibold text-white/60">Starting from</span>
-                  <span className="text-xl font-black text-white">৳59 / mo</span>
-                </div>
-                <span className="flex h-9 w-9 items-center justify-center rounded-full bg-white/10 font-bold text-white transition group-hover:bg-[#e5243b]">
-                  →
-                </span>
-              </div>
-
-              {/* Background Glow */}
-              <div className="pointer-events-none absolute -right-10 -top-10 h-40 w-40 rounded-full bg-[#e5243b]/20 blur-2xl" />
-            </Link>
-          </div>
+        <div className="shell w-full overflow-hidden">
+          <HeroSlider />
         </div>
+      </section>
 
         {/* brand marquee */}
         {marquee.length > 0 && (
@@ -162,7 +127,6 @@ function inferCategory(p: any): string {
             </div>
           </div>
         )}
-      </section>
 
       {/* ---------------- Category Filter Bar (RMT Game Shop style) ---------------- */}
       {products.length > 0 && (
