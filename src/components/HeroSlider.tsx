@@ -23,7 +23,7 @@ const slides = [
     id: "gta-5",
     title: "Grand Theft Auto V Game Key",
     href: "/subscriptions/gta-v-game-key",
-    bannerImage: "/subscriptions?category=game_keys",
+    bannerImage: "/banners/hero/hero-gta5.png",
   },
   {
     id: "genshin-impact",
@@ -39,9 +39,6 @@ const slides = [
   },
 ];
 
-// Fix GTA V banner path
-slides[2].bannerImage = "/banners/hero/hero-gta5.png";
-
 const AUTOPLAY_MS = 4000;
 
 export function HeroSlider() {
@@ -56,7 +53,6 @@ export function HeroSlider() {
     }, AUTOPLAY_MS);
   }, []);
 
-  // Autoplay — pauses on hover or when tab is hidden
   useEffect(() => {
     if (paused) {
       if (timerRef.current) clearInterval(timerRef.current);
@@ -114,25 +110,25 @@ export function HeroSlider() {
     >
       {/* Slider Track */}
       <div
-        className="flex transition-transform duration-500 ease-out"
+        className="flex w-full transition-transform duration-500 ease-out"
         style={{ transform: `translateX(-${active * 100}%)` }}
       >
         {slides.map((slide, i) => (
           <div
             key={slide.id}
-            className="relative min-w-full shrink-0"
+            className="w-full min-w-full shrink-0 overflow-hidden"
             aria-hidden={i !== active}
           >
             <Link
               href={slide.href}
-              className="block relative w-full overflow-hidden rounded-[20px]"
+              className="block w-full overflow-hidden rounded-[20px]"
               tabIndex={i !== active ? -1 : 0}
             >
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src={slide.bannerImage}
                 alt={slide.title}
-                className="h-auto w-full object-cover transition-transform duration-300 group-hover:scale-[1.01]"
+                className="w-full h-auto block rounded-[20px] object-contain transition-transform duration-300 group-hover:scale-[1.008]"
                 loading={i === 0 ? "eager" : "lazy"}
               />
             </Link>

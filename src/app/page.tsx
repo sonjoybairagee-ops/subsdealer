@@ -98,7 +98,7 @@ function inferCategory(p: any): string {
     <>
       {/* ---------------- hero section (RMT Game Shop 2-Column Grid) ---------------- */}
       <section className="hero">
-        <div className="shell flex flex-col gap-4 lg:flex-row lg:items-stretch">
+        <div className="shell flex flex-col gap-4 lg:flex-row lg:items-start">
           {/* Main Slider (Left ~70%) */}
           <div className="flex-1 min-w-0">
             <HeroSlider />
