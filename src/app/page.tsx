@@ -70,14 +70,51 @@ export default async function HomePage() {
 
   return (
     <>
-      {/* ---------------- hero ---------------- */}
+      {/* ---------------- hero section (RMT Game Shop 2-Column Grid) ---------------- */}
       <section className="hero">
-        {/* hero slider at the top */}
-        <HeroSlider />
+        <div className="shell flex flex-col gap-4 lg:flex-row lg:items-stretch">
+          {/* Main Slider (Left ~70%) */}
+          <div className="flex-1 min-w-0">
+            <HeroSlider />
+          </div>
+
+          {/* Side Promo Banner (Right ~30% on Desktop) */}
+          <div className="w-full shrink-0 lg:w-[320px] xl:w-[350px]">
+            <Link
+              href="/subscriptions/canva-pro"
+              className="group relative flex h-full min-h-[220px] w-full flex-col justify-between overflow-hidden rounded-[20px] border border-white/[.1] bg-gradient-to-br from-[#1e0a38] via-[#0d1628] to-[#0a1b14] p-6 text-left transition duration-300 hover:border-[#e5243b]/50 hover:shadow-xl hover:shadow-[#e5243b]/10"
+            >
+              <div className="relative z-10">
+                <span className="inline-flex items-center gap-1.5 rounded-full bg-[#f97316] px-3 py-1 text-[11px] font-extrabold uppercase tracking-wider text-white shadow-sm">
+                  ⚡ Hot Deal
+                </span>
+                <h3 className="mt-3 text-2xl font-black leading-tight text-white transition group-hover:text-[#e5243b]">
+                  Canva Pro &amp; ChatGPT Plus
+                </h3>
+                <p className="mt-2 text-xs leading-relaxed text-white/70">
+                  Instant activation in 2-5 minutes via bKash. 100% genuine access guaranteed!
+                </p>
+              </div>
+
+              <div className="relative z-10 mt-6 flex items-center justify-between border-t border-white/10 pt-4">
+                <div>
+                  <span className="block text-[11px] font-semibold text-white/60">Starting from</span>
+                  <span className="text-xl font-black text-white">৳59 / mo</span>
+                </div>
+                <span className="flex h-9 w-9 items-center justify-center rounded-full bg-white/10 font-bold text-white transition group-hover:bg-[#e5243b]">
+                  →
+                </span>
+              </div>
+
+              {/* Background Glow */}
+              <div className="pointer-events-none absolute -right-10 -top-10 h-40 w-40 rounded-full bg-[#e5243b]/20 blur-2xl" />
+            </Link>
+          </div>
+        </div>
 
         {/* brand marquee */}
         {marquee.length > 0 && (
-          <div className="marquee mt-16" aria-hidden="true">
+          <div className="marquee mt-10" aria-hidden="true">
             <div className="marquee-track">
               {marquee.map((p: any, i: number) => (
                 <span key={`${p.id}-${i}`} className="marquee-item">
@@ -101,30 +138,36 @@ export default async function HomePage() {
         )}
       </section>
 
-      {/* ---------------- category quick-links ---------------- */}
+      {/* ---------------- Category Filter Bar (RMT Game Shop style) ---------------- */}
       {products.length > 0 && (
-        <section className="shell -mt-6">
-          <div className="grid grid-cols-3 gap-3 sm:grid-cols-4 lg:grid-cols-8">
+        <section className="shell -mt-2">
+          <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-3">
+            <Link
+              href="/subscriptions"
+              className="group flex items-center gap-2 rounded-full border border-[#e5243b] bg-[#e5243b]/10 px-5 py-2.5 text-xs font-bold text-white transition hover:bg-[#e5243b] sm:text-sm"
+            >
+              <span>🔥</span>
+              <span>All Products</span>
+            </Link>
+
             {HOME_SECTIONS.filter((s) =>
               showcase.some((p) => (p.category ?? "other") === s.key),
             ).map((s) => (
               <Link
                 key={s.key}
                 href={`/subscriptions?category=${s.key}`}
-                className="group flex flex-col items-center gap-2 rounded-2xl border border-white/[.08] bg-white/[.02] px-3 py-5 text-center transition hover:border-[#e5243b]/50 hover:bg-white/[.04]"
+                className="group flex items-center gap-2 rounded-full border border-white/10 bg-white/[.03] px-4 py-2 text-xs font-bold text-white/80 transition hover:border-[#e5243b]/50 hover:bg-white/[.08] hover:text-white sm:text-sm"
               >
-                <span className="grid h-12 w-12 place-items-center rounded-xl bg-[#e5243b]/[.12] text-2xl">
-                  {s.icon}
-                </span>
-                <span className="text-xs font-bold text-white sm:text-sm">{s.label}</span>
+                <span>{s.icon}</span>
+                <span>{s.label}</span>
               </Link>
             ))}
           </div>
         </section>
       )}
 
-      {/* ---------------- featured products ---------------- */}
-      <section className="shell py-16">
+      {/* ---------------- featured products (6-column poster cards) ---------------- */}
+      <section className="shell py-12">
         {products.length === 0 ? (
           <div className="card mt-8 p-10 text-center">
             <p className="font-bold text-white">Catalogue is being set up</p>
@@ -137,22 +180,24 @@ export default async function HomePage() {
             </p>
           </div>
         ) : (
-          <div className="space-y-14">
+          <div className="space-y-12">
             {HOME_SECTIONS.map(({ key, label }) => {
               const items = showcase.filter((p) => (p.category ?? "other") === key);
               if (items.length === 0) return null;
               return (
                 <div key={key}>
-                  <div className="flex flex-wrap items-end justify-between gap-4">
-                    <div>
-                      <h2 className="text-2xl font-black tracking-tight">{label}</h2>
-                      <p className="muted mt-2">Pick a product to see every plan and price.</p>
-                    </div>
-                    <Link href={`/subscriptions?category=${key}`} className="btn-secondary">
-                      See all
+                  <div className="flex items-center justify-between gap-4 border-b border-white/10 pb-4">
+                    <h2 className="text-xl font-black tracking-tight text-white sm:text-2xl">
+                      {label}
+                    </h2>
+                    <Link
+                      href={`/subscriptions?category=${key}`}
+                      className="text-xs font-bold text-[#e5243b] transition hover:underline sm:text-sm"
+                    >
+                      See all →
                     </Link>
                   </div>
-                  <div className="mt-8">
+                  <div className="mt-6">
                     <ProductShowcase items={items.slice(0, 6)} />
                   </div>
                 </div>
@@ -162,8 +207,33 @@ export default async function HomePage() {
         )}
       </section>
 
+      {/* ---------------- Why Subsdealer? (RMT Game Shop Trust Cards) ---------------- */}
+      <section className="shell py-10 border-t border-white/10">
+        <div className="text-center">
+          <h2 className="text-2xl font-black text-white">কেন {BRAND}?</h2>
+          <p className="muted mt-1 text-sm">বাংলাদেশের সবচেয়ে বিশ্বস্ত ডিজিটাল সার্ভিস ও গেম টপ-আপ শপ</p>
+        </div>
 
-
+        <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          {[
+            ["💰", "বাংলাদেশে সবচেয়ে কম দাম", "ন্যায্য মূল্যে প্রিমিয়াম ডিজিটাল টুলস ও গেম টপ-আপ"],
+            ["⚡", "২-৫ মিনিটে ডেলিভারি", "অর্ডার পাওয়ার সাথে সাথে দ্রুত অ্যাক্টিভেশন"],
+            ["💳", "বিকাশ ও নগদ পেমেন্ট", "সহজ ও নিরাপদ লোকাল পেমেন্ট মেথড"],
+            ["💬", "২৪/৭ সাপোর্ট", "যেকোনো সমস্যায় সাহায্য করার জন্য আমাদের রিয়েল টিম"],
+          ].map(([icon, title, desc]) => (
+            <div
+              key={title}
+              className="flex flex-col items-center rounded-2xl border border-white/[.08] bg-white/[.02] p-6 text-center transition hover:border-[#e5243b]/40 hover:bg-white/[.04]"
+            >
+              <span className="grid h-12 w-12 place-items-center rounded-xl bg-[#e5243b]/10 text-2xl">
+                {icon}
+              </span>
+              <h3 className="mt-4 font-bold text-white">{title}</h3>
+              <p className="muted mt-2 text-xs leading-relaxed">{desc}</p>
+            </div>
+          ))}
+        </div>
+      </section>
 
       <Reviews />
     </>
