@@ -162,28 +162,6 @@ export default async function HomePage() {
         )}
       </section>
 
-      {/* ---------------- how ---------------- */}
-      <section id="how" className="shell scroll-mt-24 py-12">
-        <div className="card p-8">
-          <h2 className="text-2xl font-black tracking-tight">How it works</h2>
-          <ol className="mt-7 grid gap-6 sm:grid-cols-4">
-            {[
-              ["Pick a plan", "Choose the product and how long you want it for."],
-              ["Pay with bKash", "Send money, then submit the transaction ID and a screenshot."],
-              ["We verify", "By hand, usually within a few hours during the day."],
-              ["Start using it", "Your login or invite appears in your dashboard."],
-            ].map(([title, body], i) => (
-              <li key={title}>
-                <span className="grid h-9 w-9 place-items-center rounded-lg bg-[#e5243b]/10 font-black text-[#e5243b]">
-                  {i + 1}
-                </span>
-                <p className="mt-3 font-bold text-white">{title}</p>
-                <p className="muted mt-1 text-sm leading-6">{body}</p>
-              </li>
-            ))}
-          </ol>
-        </div>
-      </section>
 
       {/* ---------------- faq ---------------- */}
       <section id="faq" className="shell scroll-mt-24 py-12">
