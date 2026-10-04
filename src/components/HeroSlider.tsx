@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useState, useEffect, useCallback, useRef } from "react";
 
 // ---------------------------------------------------------------------------
-// Graphic Hero Banners — Carousel Peek Layout (Visible Next Slide Bleed)
+// Graphic Hero Banners — 100% Full-Width Clean Slider
 // ---------------------------------------------------------------------------
 const slides = [
   {
@@ -100,7 +100,8 @@ export function HeroSlider() {
 
   return (
     <div
-      className="group relative w-full overflow-hidden py-1 outline-none"
+      className="group relative w-full overflow-hidden rounded-[20px] border border-white/10 bg-[#101013] shadow-2xl outline-none"
+      style={{ aspectRatio: "1000 / 320" }}
       role="region"
       aria-label="Promotional hero slider"
       onMouseEnter={() => setPaused(true)}
@@ -108,11 +109,11 @@ export function HeroSlider() {
       onKeyDown={onKeyDown}
       tabIndex={0}
     >
-      {/* Track showing active slide + next slide peeking on the right */}
+      {/* 100% Full-Width Track */}
       <div
-        className="flex gap-3 transition-transform duration-600 sm:gap-4"
+        className="flex h-full w-full transition-transform duration-600 ease-out"
         style={{
-          transform: `translateX(calc(-${active} * (85% + 12px)))`,
+          transform: `translateX(-${active * 100}%)`,
           transitionTimingFunction: "cubic-bezier(0.25, 1, 0.5, 1)",
         }}
       >
@@ -121,12 +122,7 @@ export function HeroSlider() {
           return (
             <div
               key={slide.id}
-              className={`w-[85%] sm:w-[88%] lg:w-[89%] shrink-0 overflow-hidden rounded-[20px] border border-white/10 bg-[#101013] shadow-2xl transition-all duration-500 ${
-                isActive
-                  ? "opacity-100 scale-100 ring-1 ring-white/20"
-                  : "opacity-60 scale-[0.98] hover:opacity-90"
-              }`}
-              style={{ aspectRatio: "1000 / 320" }}
+              className="h-full w-full min-w-full shrink-0 overflow-hidden"
               aria-hidden={!isActive}
             >
               <Link
@@ -138,9 +134,7 @@ export function HeroSlider() {
                 <img
                   src={slide.bannerImage}
                   alt={slide.title}
-                  className={`h-full w-full object-cover rounded-[20px] transition-transform duration-1000 ease-out ${
-                    isActive ? "scale-[1.02]" : "scale-100"
-                  }`}
+                  className="h-full w-full object-cover rounded-[20px] transition-transform duration-500 group-hover:scale-[1.01]"
                   loading={i === 0 ? "eager" : "lazy"}
                 />
               </Link>
@@ -152,7 +146,7 @@ export function HeroSlider() {
       {/* Navigation Arrows */}
       <button
         type="button"
-        className="absolute left-3 top-1/2 -translate-y-1/2 z-20 flex h-10 w-10 items-center justify-center rounded-full border border-white/20 bg-black/70 text-xl text-white opacity-80 backdrop-blur-md transition hover:scale-110 hover:bg-black/90 hover:opacity-100"
+        className="absolute left-4 top-1/2 -translate-y-1/2 z-20 flex h-10 w-10 items-center justify-center rounded-full border border-white/20 bg-black/60 text-xl text-white opacity-80 backdrop-blur-md transition hover:scale-110 hover:bg-black/90 hover:opacity-100"
         onClick={prev}
         aria-label="Previous slide"
       >
@@ -160,7 +154,7 @@ export function HeroSlider() {
       </button>
       <button
         type="button"
-        className="absolute right-3 top-1/2 -translate-y-1/2 z-20 flex h-10 w-10 items-center justify-center rounded-full border border-white/20 bg-black/70 text-xl text-white opacity-80 backdrop-blur-md transition hover:scale-110 hover:bg-black/90 hover:opacity-100"
+        className="absolute right-4 top-1/2 -translate-y-1/2 z-20 flex h-10 w-10 items-center justify-center rounded-full border border-white/20 bg-black/60 text-xl text-white opacity-80 backdrop-blur-md transition hover:scale-110 hover:bg-black/90 hover:opacity-100"
         onClick={next}
         aria-label="Next slide"
       >
