@@ -39,13 +39,38 @@ export default async function SubscriptionsPage({
         Number(pl.price_bdt) < Number(min.price_bdt) ? pl : min,
       );
 
+function inferCategory(p: any): string {
+  if (p.category && p.category !== "other") return p.category;
+  const s = (p.slug || "").toLowerCase();
+  const n = (p.name || "").toLowerCase();
+  if (["pubg", "free-fire", "mobile-legends", "genshin", "delta-force"].some((k) => s.includes(k) || n.includes(k))) {
+    return "games";
+  }
+  if (["gta", "rdr2", "red-dead", "steam", "key"].some((k) => s.includes(k) || n.includes(k))) {
+    return "game_keys";
+  }
+  if (["chatgpt", "leonardo", "midjourney", "claude", "ai"].some((k) => s.includes(k) || n.includes(k))) {
+    return "ai";
+  }
+  if (["canva", "figma", "adobe", "freepik", "design"].some((k) => s.includes(k) || n.includes(k))) {
+    return "design";
+  }
+  if (["capcut", "premiere", "video"].some((k) => s.includes(k) || n.includes(k))) {
+    return "video";
+  }
+  if (["windows", "office", "software"].some((k) => s.includes(k) || n.includes(k))) {
+    return "software";
+  }
+  return "other";
+}
+
       return {
         id: p.id,
         slug: p.slug,
         name: p.name,
         tagline: p.tagline,
         thumbnail_url: p.thumbnail_url || `/products/${p.slug}.png`,
-        category: p.category,
+        category: inferCategory(p),
         delivery_type: p.delivery_type ?? "credential",
         features: Array.isArray(p.features) ? p.features : [],
         cheapestPrice: Number(cheapest.price_bdt),

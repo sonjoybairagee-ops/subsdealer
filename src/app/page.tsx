@@ -50,6 +50,31 @@ export default async function HomePage() {
   // The marquee needs the list twice so the loop is seamless.
   const marquee = products.length > 0 ? [...products, ...products] : [];
 
+function inferCategory(p: any): string {
+  if (p.category && p.category !== "other") return p.category;
+  const s = (p.slug || "").toLowerCase();
+  const n = (p.name || "").toLowerCase();
+  if (["pubg", "free-fire", "mobile-legends", "genshin", "delta-force"].some((k) => s.includes(k) || n.includes(k))) {
+    return "games";
+  }
+  if (["gta", "rdr2", "red-dead", "steam", "key"].some((k) => s.includes(k) || n.includes(k))) {
+    return "game_keys";
+  }
+  if (["chatgpt", "leonardo", "midjourney", "claude", "ai"].some((k) => s.includes(k) || n.includes(k))) {
+    return "ai";
+  }
+  if (["canva", "figma", "adobe", "freepik", "design"].some((k) => s.includes(k) || n.includes(k))) {
+    return "design";
+  }
+  if (["capcut", "premiere", "video"].some((k) => s.includes(k) || n.includes(k))) {
+    return "video";
+  }
+  if (["windows", "office", "software"].some((k) => s.includes(k) || n.includes(k))) {
+    return "software";
+  }
+  return "other";
+}
+
   const showcase: ShowcaseItem[] = products.map((p: any) => {
     const plans = (p.sub_plans ?? []).filter((pl: any) => pl.is_active);
     const cheapest = plans.reduce((min: any, pl: any) =>
@@ -61,7 +86,7 @@ export default async function HomePage() {
       name: p.name,
       tagline: p.tagline,
       thumbnail_url: p.thumbnail_url || `/products/${p.slug}.png`,
-      category: p.category ?? "other",
+      category: inferCategory(p),
       delivery_type: p.delivery_type ?? "credential",
       cheapestPrice: Number(cheapest.price_bdt),
       cheapestCompareAt: cheapest.compare_at_bdt ? Number(cheapest.compare_at_bdt) : null,
@@ -199,7 +224,7 @@ export default async function HomePage() {
                     </Link>
                   </div>
                   <div className="mt-6">
-                    <ProductShowcase items={items.slice(0, 6)} />
+                    <ProductShowcase items={items.slice(0, 12)} />
                   </div>
                 </div>
               );
