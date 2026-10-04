@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
+import { randomBytes } from "crypto";
 import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { isValidTxnRef } from "@/lib/subscriptions";
@@ -7,22 +8,20 @@ import { isValidTxnRef } from "@/lib/subscriptions";
 export const dynamic = "force-dynamic";
 
 /**
- * Customer-facing: submit a manual bKash payment for a subscription plan.
+ * Customer-facing: submit a payment or claim a promotional free subscription.
  *
- * Nothing is granted here. The order lands as 'pending' and an admin turns it
- * into a subscription through approve_sub_order.
+ * Server-side Security:
+ * - Actual plan price is ALWAYS fetched directly from Supabase DB by planId.
+ * - Client parameters cannot bypass payment validation.
+ * - 0 BDT plans enforce 1 free claim per user per product.
  */
 
-// bKash only for subscriptions. The sub_orders CHECK still allows 'nagad' and
-// 'manual' so an admin can record one by hand later, but nothing the customer
-// can reach will submit anything else.
 const schema = z.object({
   planId: z.string().uuid(),
   method: z.literal("bkash"),
-  txnRef: z.string().trim().min(1).max(40),
+  txnRef: z.string().trim().max(40).optional().nullable(),
   senderNumber: z.string().trim().max(20).optional().nullable(),
   receiptPath: z.string().max(500).optional().nullable(),
-  // Only used by invite-delivered products: the address we invite.
   inviteEmail: z.string().trim().email().max(200).optional().nullable(),
 });
 
@@ -41,28 +40,16 @@ export async function POST(req: Request) {
     );
   }
   const { planId, method, receiptPath, senderNumber } = parsed.data;
-  const txnRef = parsed.data.txnRef.toUpperCase();
   const inviteEmail = parsed.data.inviteEmail?.toLowerCase() || null;
 
-  if (!isValidTxnRef(txnRef)) {
-    return NextResponse.json(
-      {
-        error:
-          "That Transaction ID does not look right. It should be 8–12 characters with both letters and numbers.",
-      },
-      { status: 400 },
-    );
-  }
-
-  // A receipt path must live under the uploader's own folder, otherwise
-  // someone could point their order at another customer's upload.
+  // A receipt path must live under the uploader's own folder
   if (receiptPath && !receiptPath.startsWith(`${user.id}/`)) {
     return NextResponse.json({ error: "Invalid receipt path" }, { status: 400 });
   }
 
   const svc = createAdminClient();
 
-  // Read the price from the database, never from the request body.
+  // 1. Fetch ACTUAL plan and product data from Supabase DB (never trust client)
   const { data: plan } = await svc
     .from("sub_plans")
     .select("id, product_id, name, price_bdt, duration_days, is_active, sub_products(name, slug, is_active, delivery_type)")
@@ -77,8 +64,7 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "This product is not on sale right now." }, { status: 404 });
   }
 
-  // An invite product is undeliverable without an address to invite, so this
-  // is a hard requirement rather than something to chase the customer for later.
+  // Invite delivery requirement
   if (product.delivery_type === "invite" && !inviteEmail) {
     return NextResponse.json(
       { error: `Please give us the email address of your ${product.name} account.` },
@@ -86,26 +72,68 @@ export async function POST(req: Request) {
     );
   }
 
-  // One transaction ID, one order. The partial unique index enforces this too,
-  // but catching it here gives the customer a sentence instead of a 500.
-  const { data: duplicate } = await svc
-    .from("sub_orders")
-    .select("id")
-    .eq("method", method)
-    .ilike("txn_ref", txnRef)
-    .in("status", ["pending", "on_hold", "approved"])
-    .limit(1)
-    .maybeSingle();
+  const dbPrice = Number(plan.price_bdt);
+  const isFreePlan = dbPrice === 0;
 
-  if (duplicate) {
-    return NextResponse.json(
-      { error: "This Transaction ID has already been submitted. Please wait for verification." },
-      { status: 409 },
-    );
+  let finalTxnRef = "";
+
+  if (isFreePlan) {
+    // 2. Free Claim Abuse Prevention: Enforce 1 free claim per user per product
+    const { data: existingFreeClaim } = await svc
+      .from("sub_orders")
+      .select("id, sub_plans!inner(price_bdt)")
+      .eq("user_id", user.id)
+      .eq("product_id", plan.product_id)
+      .eq("sub_plans.price_bdt", 0)
+      .in("status", ["pending", "on_hold", "approved", "completed"])
+      .limit(1)
+      .maybeSingle();
+
+    if (existingFreeClaim) {
+      return NextResponse.json(
+        { error: `🎁 You have already claimed a free promotion for ${product.name}.` },
+        { status: 409 },
+      );
+    }
+
+    // Server generates a crypto-secure reference for free claims
+    finalTxnRef = `FREE-CLAIM-${randomBytes(3).toString("hex").toUpperCase()}`;
+  } else {
+    // 3. Paid Plan Validation
+    const clientTxnRef = (parsed.data.txnRef || "").trim().toUpperCase();
+
+    // Reject fake FREE- references or invalid bKash transaction IDs on paid plans
+    if (clientTxnRef.startsWith("FREE-") || !isValidTxnRef(clientTxnRef)) {
+      return NextResponse.json(
+        {
+          error:
+            "That Transaction ID does not look right. It should be 8–12 characters with both letters and numbers.",
+        },
+        { status: 400 },
+      );
+    }
+
+    // Check for duplicate transaction ID
+    const { data: duplicate } = await svc
+      .from("sub_orders")
+      .select("id")
+      .eq("method", method)
+      .ilike("txn_ref", clientTxnRef)
+      .in("status", ["pending", "on_hold", "approved"])
+      .limit(1)
+      .maybeSingle();
+
+    if (duplicate) {
+      return NextResponse.json(
+        { error: "This Transaction ID has already been submitted. Please wait for verification." },
+        { status: 409 },
+      );
+    }
+
+    finalTxnRef = clientTxnRef;
   }
 
-  // Don't let someone stack five pending orders for the same plan while
-  // waiting on review — it just creates work and confusion for the admin.
+  // Prevent duplicate pending orders for the exact same plan
   const { data: alreadyPending } = await svc
     .from("sub_orders")
     .select("id")
@@ -119,7 +147,7 @@ export async function POST(req: Request) {
     return NextResponse.json(
       {
         error:
-          "You already have a payment under review for this plan. We will activate it shortly.",
+          "You already have a payment or claim under review for this plan. We will activate it shortly.",
       },
       { status: 409 },
     );
@@ -131,10 +159,10 @@ export async function POST(req: Request) {
       user_id: user.id,
       product_id: plan.product_id,
       plan_id: plan.id,
-      amount_bdt: plan.price_bdt,
+      amount_bdt: dbPrice,
       method,
       sender_number: senderNumber || null,
-      txn_ref: txnRef,
+      txn_ref: finalTxnRef,
       receipt_path: receiptPath || null,
       invite_email: inviteEmail,
       status: "pending",
@@ -156,6 +184,8 @@ export async function POST(req: Request) {
     order,
     product: product.name,
     plan: plan.name,
-    message: "Payment submitted. Your subscription will appear once we verify the transaction.",
+    message: isFreePlan
+      ? "🎁 Free claim submitted! Your subscription will be activated shortly."
+      : "Payment submitted. Your subscription will appear once we verify the transaction.",
   });
 }

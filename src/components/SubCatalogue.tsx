@@ -3,6 +3,7 @@
 import { useMemo, useState } from "react";
 import Link from "next/link";
 import { describeDuration, discountPercent, formatBdt } from "@/lib/subscriptions";
+import { ProductShowcase, type ShowcaseItem } from "./ProductShowcase";
 
 export interface CatalogueProduct {
   id: string;
@@ -19,28 +20,29 @@ export interface CatalogueProduct {
   planCount: number;
 }
 
-type View = "list" | "grid";
+type View = "grid" | "list";
 
-// Pretty names + display order for categories. Anything not listed falls back
-// to a capitalised version of its key and sorts to the end.
+// Pretty names + display order for categories.
 const CAT_LABELS: Record<string, string> = {
-  ai: "AI",
+  games: "Game Top-Up",
+  game_keys: "Game Keys",
+  ai: "AI Tools",
   design: "Design",
   video: "Video",
   productivity: "Productivity",
   education: "Education",
   software: "Software",
-  games: "Games",
   other: "Other",
 };
 const CAT_ORDER = [
+  "games",
+  "game_keys",
   "ai",
   "design",
   "video",
   "productivity",
   "education",
   "software",
-  "games",
   "other",
 ];
 
@@ -61,7 +63,7 @@ export function SubCatalogue({
 }) {
   const [query, setQuery] = useState("");
   const [category, setCategory] = useState(initialCategory);
-  const [view, setView] = useState<View>("list");
+  const [view, setView] = useState<View>("grid");
 
   // Counts come from the full list, not the filtered one — a chip that said
   // "AI 0" after you picked another category would be useless.
@@ -136,25 +138,6 @@ export function SubCatalogue({
             </button>
           ))}
         </div>
-
-        <div className="view-toggle ml-auto" role="group" aria-label="Change layout">
-          <button
-            type="button"
-            aria-pressed={view === "grid"}
-            aria-label="Grid view"
-            onClick={() => setView("grid")}
-          >
-            ▦
-          </button>
-          <button
-            type="button"
-            aria-pressed={view === "list"}
-            aria-label="List view"
-            onClick={() => setView("list")}
-          >
-            ☰
-          </button>
-        </div>
       </div>
 
       {/* ---- results ---- */}
@@ -184,33 +167,15 @@ export function SubCatalogue({
                   {items.length} product{items.length === 1 ? "" : "s"}
                 </span>
               </div>
-              {view === "list" ? (
-                <div className="mt-4 grid gap-3 lg:grid-cols-2">
-                  {items.map((p) => (
-                    <ProductRow key={p.id} product={p} />
-                  ))}
-                </div>
-              ) : (
-                <div className="mt-4 grid grid-cols-2 gap-3.5 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 sm:gap-5">
-                  {items.map((p) => (
-                    <ProductCard key={p.id} product={p} />
-                  ))}
-                </div>
-              )}
+              <div className="mt-4">
+                <ProductShowcase items={items} />
+              </div>
             </section>
           ))}
         </div>
-      ) : view === "list" ? (
-        <div className="mt-7 grid gap-3 lg:grid-cols-2">
-          {visible.map((p) => (
-            <ProductRow key={p.id} product={p} />
-          ))}
-        </div>
       ) : (
-        <div className="mt-7 grid grid-cols-2 gap-3.5 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 sm:gap-5">
-          {visible.map((p) => (
-            <ProductCard key={p.id} product={p} />
-          ))}
+        <div className="mt-4">
+          <ProductShowcase items={visible} />
         </div>
       )}
 

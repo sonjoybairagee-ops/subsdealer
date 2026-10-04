@@ -5,12 +5,6 @@ import { LogoTile } from "@/components/Logo";
 
 const BRAND = process.env.NEXT_PUBLIC_BRAND_NAME || "Subsdealer";
 
-const NAV = [
-  ["/subscriptions", "Subscriptions"],
-  ["/subscriptions?category=ai", "AI"],
-  ["/subscriptions?category=games", "Game Top-Up"],
-];
-
 export async function SiteHeader() {
   const profile = await getProfile();
   const isAdmin = profile?.role === "admin";
@@ -39,14 +33,6 @@ export async function SiteHeader() {
             <path d="m21 21-4.35-4.35" />
           </svg>
         </form>
-
-        <nav className="site-nav" aria-label="Main navigation">
-          {NAV.map(([href, label]) => (
-            <Link key={href} href={href}>
-              {label}
-            </Link>
-          ))}
-        </nav>
 
         <div className="header-actions">
           {profile ? (

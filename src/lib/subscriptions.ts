@@ -425,6 +425,8 @@ export function getProductThumbnail(slug: string, dbThumbnailUrl?: string | null
     "duolingo-super",
     "quillbot-premium",
     "leonardo-ai",
+    "windows-11",
+    "windows-11-pro",
   ];
 
   if (localSlugs.includes(slug)) {
