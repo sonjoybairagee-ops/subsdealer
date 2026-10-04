@@ -34,7 +34,7 @@ export async function SiteHeader() {
           </svg>
         </form>
 
-        <div className="header-actions">
+        <div className="header-actions ml-auto">
           {profile ? (
             <>
               {isAdmin && (

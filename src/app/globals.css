@@ -413,12 +413,6 @@ table.data tr:last-child td {
   margin-left: auto;
 }
 
-@media (min-width: 900px) {
-  .header-actions {
-    margin-left: 0;
-  }
-}
-
 .header-actions .btn-primary,
 .header-actions .btn-secondary {
   min-height: 38px;
