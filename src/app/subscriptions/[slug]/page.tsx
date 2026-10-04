@@ -51,6 +51,9 @@ export default async function SubscriptionProductPage({
   // so none of the shared-login warnings apply to it.
   const isShared = product.access_type === "shared" && !isInvite;
   const thumbnailUrl = product.thumbnail_url || `/products/${product.slug}.png`;
+  const coverUrl = product.slug.startsWith("valorant")
+    ? `/products/${product.slug}-banner.png`
+    : thumbnailUrl;
 
   return (
     <div className="shell py-12">
@@ -61,11 +64,11 @@ export default async function SubscriptionProductPage({
       <div className="mt-6 grid gap-10 lg:grid-cols-[1.05fr_.95fr]">
         <section>
           {/* Top Cover Banner Image (RMT Game Shop style) */}
-          {thumbnailUrl && (
+          {coverUrl && (
             <div className="mb-6 relative aspect-[16/9] w-full overflow-hidden rounded-2xl border border-white/10 bg-[#121620] shadow-xl">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
-                src={thumbnailUrl}
+                src={coverUrl}
                 alt={product.name}
                 className="h-full w-full object-cover"
               />
