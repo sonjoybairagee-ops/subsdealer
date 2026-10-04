@@ -59,7 +59,7 @@ export function SubCheckoutForm({
   const isManaged = product.slug.startsWith("chatgpt");
   // Game top-ups (PUBG UC, etc.) collect a Player ID at checkout instead of
   // an email, and we top the account up directly.
-  const GAME_SLUGS = ["pubg", "free-fire", "mobile-legends", "genshin", "delta-force", "game-"];
+  const GAME_SLUGS = ["pubg", "free-fire", "mobile-legends", "genshin", "delta-force", "valorant", "game-"];
   const isGame = GAME_SLUGS.some((s) => product.slug.startsWith(s));
   const WHATSAPP_SUPPORT = process.env.NEXT_PUBLIC_WHATSAPP_SUPPORT || "";
   // An invite product never involves a shared password, so the shared-account
