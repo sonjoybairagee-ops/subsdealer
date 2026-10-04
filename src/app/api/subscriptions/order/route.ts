@@ -180,6 +180,32 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 
+  // Send Order Confirmation Email asynchronously
+  if (user.email) {
+    const { getOrderConfirmationEmailHtml } = await import("@/lib/emails/subscriptionTemplates");
+    const { sendEmail } = await import("@/lib/email");
+    const { data: profile } = await svc
+      .from("profiles")
+      .select("full_name")
+      .eq("id", user.id)
+      .maybeSingle();
+
+    sendEmail({
+      to: user.email,
+      subject: isFreePlan
+        ? `🎁 Free Claim Confirmed — ${product.name}`
+        : `Order Received — ${product.name} (${order.id.slice(0, 8)})`,
+      html: getOrderConfirmationEmailHtml({
+        customerName: profile?.full_name || "Valued Customer",
+        orderId: order.id,
+        productName: product.name,
+        planName: plan.name,
+        amountBdt: dbPrice,
+        txnRef: finalTxnRef,
+      }),
+    }).catch((err) => console.error("[order] Confirmation email error:", err));
+  }
+
   return NextResponse.json({
     order,
     product: product.name,

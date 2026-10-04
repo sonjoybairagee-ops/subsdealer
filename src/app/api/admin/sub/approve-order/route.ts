@@ -142,13 +142,20 @@ export async function POST(req: Request) {
       .maybeSingle();
 
     if (profile?.email) {
+      const { getInvoiceDeliveryEmailHtml } = await import("@/lib/emails/subscriptionTemplates");
+      const productName = (order as any).sub_products?.name ?? "Subscription";
+      const planName = (order as any).sub_plans?.name ?? "Subscription Plan";
+
       await sendEmail({
         to: profile.email,
-        subject: `Your ${(order as any).sub_products?.name ?? "subscription"} is ready`,
-        html: getSubscriptionReadyEmailHtml({
-          customerName: profile.full_name || "Creator",
-          productName: (order as any).sub_products?.name ?? "Your subscription",
-          planName: (order as any).sub_plans?.name ?? "Subscription",
+        subject: `Invoice & Activation — ${productName}`,
+        html: getInvoiceDeliveryEmailHtml({
+          customerName: profile.full_name || "Valued Customer",
+          orderId: order.id,
+          productName,
+          planName,
+          amountBdt: Number(order.amount_bdt || 0),
+          txnRef: order.txn_ref || "VERIFIED",
           expiryDate: formatDhakaDate(subscription.expiry_date),
         }),
       });
