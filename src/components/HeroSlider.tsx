@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useState, useEffect, useCallback, useRef } from "react";
 
 // ---------------------------------------------------------------------------
-// Graphic Hero Banners — Horizontal Slider + Active Item Zoom (100 -> 110)
+// Graphic Hero Banners — Horizontal Slider + 60fps Hardware Accelerated Zoom
 // ---------------------------------------------------------------------------
 const slides = [
   {
@@ -39,7 +39,7 @@ const slides = [
   },
 ];
 
-const AUTOPLAY_MS = 4000;
+const AUTOPLAY_MS = 4200;
 
 export function HeroSlider() {
   const [active, setActive] = useState(0);
@@ -109,10 +109,13 @@ export function HeroSlider() {
       onKeyDown={onKeyDown}
       tabIndex={0}
     >
-      {/* Horizontal Sliding Track */}
+      {/* Horizontal Sliding Track (Fluid iOS Easing) */}
       <div
-        className="flex h-full w-full transition-transform duration-700 ease-in-out"
-        style={{ transform: `translateX(-${active * 100}%)` }}
+        className="flex h-full w-full transition-transform duration-700"
+        style={{
+          transform: `translateX(-${active * 100}%)`,
+          transitionTimingFunction: "cubic-bezier(0.16, 1, 0.3, 1)",
+        }}
       >
         {slides.map((slide, i) => {
           const isActive = i === active;
@@ -129,10 +132,11 @@ export function HeroSlider() {
               >
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
+                  key={isActive ? `active-${i}-${active}` : `inactive-${i}`}
                   src={slide.bannerImage}
                   alt={slide.title}
-                  className={`h-full w-full object-cover rounded-[20px] transition-transform duration-[4000ms] ease-out ${
-                    isActive ? "scale-110" : "scale-100"
+                  className={`h-full w-full object-cover rounded-[20px] ${
+                    isActive ? "hero-banner-zoom" : ""
                   }`}
                   loading={i === 0 ? "eager" : "lazy"}
                 />

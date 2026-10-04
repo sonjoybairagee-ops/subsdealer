@@ -1353,3 +1353,19 @@ pre {
   font-style: normal;
   color: var(--accent);
 }
+
+/* ---------- 60fps Hardware Accelerated Hero Banner Zoom ---------- */
+@keyframes heroBannerZoom {
+  0% {
+    transform: scale(1);
+  }
+  100% {
+    transform: scale(1.08);
+  }
+}
+
+.hero-banner-zoom {
+  animation: heroBannerZoom 4.2s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+  will-change: transform;
+}
+
