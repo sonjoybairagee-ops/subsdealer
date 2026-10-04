@@ -3,6 +3,7 @@ import { createClient } from "@/lib/supabase/server";
 import { formatBdt, discountPercent, describeDuration } from "@/lib/subscriptions";
 import { ProductShowcase, type ShowcaseItem } from "@/components/ProductShowcase";
 import { Reviews } from "@/components/Reviews";
+import { HeroSlider } from "@/components/HeroSlider";
 
 export const dynamic = "force-dynamic";
 
@@ -71,61 +72,8 @@ export default async function HomePage() {
     <>
       {/* ---------------- hero ---------------- */}
       <section className="hero">
-        <div className="shell">
-          <h1 className="hero-title">
-            Premium tools.
-            <br />
-            Local prices.
-          </h1>
-
-          <p className="hero-sub">
-            Canva Pro, CapCut Pro, ChatGPT Plus and more
-            {cheapestOverall !== null ? ` — from ${formatBdt(cheapestOverall)}` : ""}. Paid
-            with bKash, delivered to your dashboard.
-          </p>
-
-          <div className="proof-pill">
-            <span className="proof-avatars">
-              {[
-                ["A", "#e5243b"],
-                ["R", "#6aa9ff"],
-                ["S", "#ffb347"],
-                ["M", "#c58bff"],
-              ].map(([letter, colour]) => (
-                <span key={letter} style={{ background: colour }}>
-                  {letter}
-                </span>
-              ))}
-            </span>
-            <span className="text-[#ffcf8c]">★★★★★</span>
-            <span className="font-bold text-white">4.9</span>
-            <span className="muted">· verified by hand, every order</span>
-          </div>
-
-          <div className="mt-9 flex flex-wrap justify-center gap-3">
-            <Link href="/subscriptions" className="btn-primary">
-              View plans →
-            </Link>
-            <Link href="#how" className="btn-secondary">
-              How it works
-            </Link>
-          </div>
-
-          <div className="trust-row">
-            <span>
-              <span className="text-[#e5243b]">⚡</span> Fast activation
-            </span>
-            <span>
-              <span className="text-[#e5243b]">✓</span> bKash payments
-            </span>
-            <span>
-              <span className="text-[#e5243b]">↻</span> Free replacement
-            </span>
-            <span>
-              <span className="text-[#e5243b]">●</span> Real support
-            </span>
-          </div>
-        </div>
+        {/* hero slider at the top */}
+        <HeroSlider />
 
         {/* brand marquee */}
         {marquee.length > 0 && (
