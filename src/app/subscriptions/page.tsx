@@ -43,7 +43,7 @@ function inferCategory(p: any): string {
   if (p.category && p.category !== "other") return p.category;
   const s = (p.slug || "").toLowerCase();
   const n = (p.name || "").toLowerCase();
-  if (["pubg", "free-fire", "mobile-legends", "genshin", "delta-force", "valorant"].some((k) => s.includes(k) || n.includes(k))) {
+  if (["pubg", "free-fire", "mobile-legends", "genshin", "delta-force", "valorant", "farlight"].some((k) => s.includes(k) || n.includes(k))) {
     return "games";
   }
   if (["gta", "rdr2", "red-dead", "steam", "key"].some((k) => s.includes(k) || n.includes(k))) {
