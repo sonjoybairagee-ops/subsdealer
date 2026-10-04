@@ -3,6 +3,7 @@ import "./globals.css";
 import { SiteHeader } from "@/components/SiteHeader";
 import { SiteFooter } from "@/components/SiteFooter";
 import { SetupNotice } from "@/components/SetupNotice";
+import { MetaPixel } from "@/components/MetaPixel";
 import { checkConfig } from "@/lib/config";
 
 const BRAND = process.env.NEXT_PUBLIC_BRAND_NAME || "Subsdealer";
@@ -35,6 +36,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en">
       <body>
+        <MetaPixel />
         <SiteHeader />
         <main className="min-h-[70vh]">{children}</main>
         <SiteFooter />
