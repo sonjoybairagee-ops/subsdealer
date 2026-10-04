@@ -51,9 +51,10 @@ export default async function SubscriptionProductPage({
   // so none of the shared-login warnings apply to it.
   const isShared = product.access_type === "shared" && !isInvite;
   const thumbnailUrl = product.thumbnail_url || `/products/${product.slug}.png`;
-  const coverUrl = product.slug.startsWith("valorant")
-    ? `/products/${product.slug}-banner.png`
-    : thumbnailUrl;
+  const coverUrl =
+    product.slug.startsWith("valorant") || product.slug.startsWith("farlight")
+      ? `/products/${product.slug}-banner.png`
+      : thumbnailUrl;
 
   return (
     <div className="shell py-12">
