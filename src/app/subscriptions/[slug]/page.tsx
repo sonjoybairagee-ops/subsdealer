@@ -50,6 +50,7 @@ export default async function SubscriptionProductPage({
   // Invite delivery means the customer keeps their own account and password,
   // so none of the shared-login warnings apply to it.
   const isShared = product.access_type === "shared" && !isInvite;
+  const thumbnailUrl = product.thumbnail_url || `/products/${product.slug}.png`;
 
   return (
     <div className="shell py-12">
@@ -60,11 +61,11 @@ export default async function SubscriptionProductPage({
       <div className="mt-6 grid gap-10 lg:grid-cols-[1.05fr_.95fr]">
         <section>
           {/* Top Cover Banner Image (RMT Game Shop style) */}
-          {product.thumbnail_url && (
+          {thumbnailUrl && (
             <div className="mb-6 relative aspect-[16/9] w-full overflow-hidden rounded-2xl border border-white/10 bg-[#121620] shadow-xl">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
-                src={product.thumbnail_url}
+                src={thumbnailUrl}
                 alt={product.name}
                 className="h-full w-full object-cover"
               />
@@ -74,11 +75,11 @@ export default async function SubscriptionProductPage({
           <div className="flex items-start gap-5">
             <div
               className="product-logo h-20 w-20 rounded-2xl text-2xl"
-              data-image={product.thumbnail_url ? "yes" : "no"}
+              data-image={thumbnailUrl ? "yes" : "no"}
             >
-              {product.thumbnail_url ? (
+              {thumbnailUrl ? (
                 // eslint-disable-next-line @next/next/no-img-element
-                <img src={product.thumbnail_url} alt="" />
+                <img src={thumbnailUrl} alt="" />
               ) : (
                 product.name.slice(0, 2).toUpperCase()
               )}
