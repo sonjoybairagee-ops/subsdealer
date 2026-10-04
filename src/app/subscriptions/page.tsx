@@ -83,18 +83,7 @@ function inferCategory(p: any): string {
     .filter(Boolean) as CatalogueProduct[];
 
   return (
-    <div className="shell py-14">
-      <header className="mx-auto max-w-2xl text-center">
-        <p className="eyebrow">Catalogue</p>
-        <h1 className="mt-3 text-4xl font-black tracking-tight sm:text-5xl">
-          Every subscription we sell
-        </h1>
-        <p className="muted mt-4 text-lg leading-8">
-          Pay with bKash. We verify the payment, hand over access, and replace it free if
-          it ever stops working.
-        </p>
-      </header>
-
+    <div className="shell py-10">
       {error && (
         <div className="card mt-10 border border-[#ff6b6b]/40 p-5">
           <p className="font-bold text-[#ff8c8c]">Could not load the catalogue</p>

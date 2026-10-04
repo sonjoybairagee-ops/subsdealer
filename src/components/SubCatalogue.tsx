@@ -104,8 +104,33 @@ export function SubCatalogue({
 
   const showGroups = category === "all" && query.trim() === "";
 
+  const isGamesCategory = category === "games" || category === "game_keys";
+
   return (
     <div>
+      {/* ---- Dynamic Header / Banner ---- */}
+      {isGamesCategory ? (
+        <div className="mb-8 overflow-hidden rounded-2xl border border-white/10 shadow-2xl">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src="/banners/games-banner.png"
+            alt="Level Up Your Game - Game Top-Up & Keys"
+            className="h-auto w-full object-cover"
+          />
+        </div>
+      ) : (
+        <header className="mx-auto mb-10 max-w-2xl text-center">
+          <p className="eyebrow">Catalogue</p>
+          <h1 className="mt-3 text-4xl font-black tracking-tight sm:text-5xl">
+            Every subscription we sell
+          </h1>
+          <p className="muted mt-4 text-lg leading-8">
+            Pay with bKash. We verify the payment, hand over access, and replace it free if
+            it ever stops working.
+          </p>
+        </header>
+      )}
+
       {/* ---- search ---- */}
       <div className="search-wrap">
         <span className="search-icon">⌕</span>
