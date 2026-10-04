@@ -2,6 +2,7 @@ import Link from "next/link";
 import type { Metadata } from "next";
 import { createClient } from "@/lib/supabase/server";
 import { SubCatalogue, type CatalogueProduct } from "@/components/SubCatalogue";
+import { getProductThumbnail } from "@/lib/subscriptions";
 
 export const dynamic = "force-dynamic";
 
@@ -69,7 +70,7 @@ function inferCategory(p: any): string {
         slug: p.slug,
         name: p.name,
         tagline: p.tagline,
-        thumbnail_url: p.thumbnail_url || `/products/${p.slug}.png`,
+        thumbnail_url: getProductThumbnail(p.slug, p.thumbnail_url),
         category: inferCategory(p),
         delivery_type: p.delivery_type ?? "credential",
         features: Array.isArray(p.features) ? p.features : [],

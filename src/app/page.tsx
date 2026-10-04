@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
-import { formatBdt, discountPercent, describeDuration } from "@/lib/subscriptions";
+import { formatBdt, discountPercent, describeDuration, getProductThumbnail } from "@/lib/subscriptions";
 import { ProductShowcase, type ShowcaseItem } from "@/components/ProductShowcase";
 import { Reviews } from "@/components/Reviews";
 import { HeroSlider } from "@/components/HeroSlider";
@@ -85,7 +85,7 @@ function inferCategory(p: any): string {
       slug: p.slug,
       name: p.name,
       tagline: p.tagline,
-      thumbnail_url: p.thumbnail_url || `/products/${p.slug}.png`,
+      thumbnail_url: getProductThumbnail(p.slug, p.thumbnail_url),
       category: inferCategory(p),
       delivery_type: p.delivery_type ?? "credential",
       cheapestPrice: Number(cheapest.price_bdt),

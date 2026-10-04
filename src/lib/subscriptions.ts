@@ -396,3 +396,39 @@ export function isValidTxnRef(raw: string): boolean {
   if (/^[A-Z]+$/.test(txn)) return false;
   return /^[A-Z0-9]+$/.test(txn);
 }
+
+/**
+ * Returns the best thumbnail URL for a product.
+ * Prioritizes local 3:4 poster assets in /public/products/ for consistent storefront branding.
+ */
+export function getProductThumbnail(slug: string, dbThumbnailUrl?: string | null): string {
+  const localSlugs = [
+    "capcut-pro",
+    "capcut",
+    "canva-pro",
+    "canva",
+    "chatgpt-plus",
+    "chatgpt",
+    "pubg",
+    "free-fire",
+    "mobile-legends",
+    "delta-force",
+    "valorant",
+    "valorant-my",
+    "farlight-84",
+    "gta-v",
+    "rdr2",
+    "adobe-creative-cloud",
+    "microsoft-365",
+    "duolingo-super",
+    "quillbot-premium",
+    "leonardo-ai",
+  ];
+
+  if (localSlugs.includes(slug)) {
+    return `/products/${slug}.png`;
+  }
+
+  return dbThumbnailUrl || `/products/${slug}.png`;
+}
+
