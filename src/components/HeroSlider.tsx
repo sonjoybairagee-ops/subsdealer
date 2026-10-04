@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useState, useEffect, useCallback, useRef } from "react";
 
 // ---------------------------------------------------------------------------
-// Graphic Hero Banners — Horizontal Slider + 60fps Hardware Accelerated Zoom
+// Graphic Hero Banners — RMT Game Shop Style Smooth Slider
 // ---------------------------------------------------------------------------
 const slides = [
   {
@@ -39,7 +39,7 @@ const slides = [
   },
 ];
 
-const AUTOPLAY_MS = 4200;
+const AUTOPLAY_MS = 4000;
 
 export function HeroSlider() {
   const [active, setActive] = useState(0);
@@ -109,12 +109,12 @@ export function HeroSlider() {
       onKeyDown={onKeyDown}
       tabIndex={0}
     >
-      {/* Horizontal Sliding Track (Fluid iOS Easing) */}
+      {/* Horizontal Sliding Track with RMT Smooth Easing */}
       <div
-        className="flex h-full w-full transition-transform duration-700"
+        className="flex h-full w-full transition-transform duration-600 ease-out"
         style={{
           transform: `translateX(-${active * 100}%)`,
-          transitionTimingFunction: "cubic-bezier(0.16, 1, 0.3, 1)",
+          transitionTimingFunction: "cubic-bezier(0.25, 1, 0.5, 1)",
         }}
       >
         {slides.map((slide, i) => {
@@ -132,11 +132,10 @@ export function HeroSlider() {
               >
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
-                  key={isActive ? `active-${i}-${active}` : `inactive-${i}`}
                   src={slide.bannerImage}
                   alt={slide.title}
-                  className={`h-full w-full object-cover rounded-[20px] ${
-                    isActive ? "hero-banner-zoom" : ""
+                  className={`h-full w-full object-cover rounded-[20px] transition-transform duration-1000 ease-out ${
+                    isActive ? "scale-[1.03]" : "scale-100"
                   }`}
                   loading={i === 0 ? "eager" : "lazy"}
                 />
