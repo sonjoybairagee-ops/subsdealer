@@ -59,6 +59,18 @@ export default async function SubscriptionProductPage({
 
       <div className="mt-6 grid gap-10 lg:grid-cols-[1.05fr_.95fr]">
         <section>
+          {/* Top Cover Banner Image (RMT Game Shop style) */}
+          {product.thumbnail_url && (
+            <div className="mb-6 relative aspect-[16/9] w-full overflow-hidden rounded-2xl border border-white/10 bg-[#121620] shadow-xl">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={product.thumbnail_url}
+                alt={product.name}
+                className="h-full w-full object-cover"
+              />
+            </div>
+          )}
+
           <div className="flex items-start gap-5">
             <div
               className="product-logo h-20 w-20 rounded-2xl text-2xl"
