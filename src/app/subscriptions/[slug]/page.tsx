@@ -74,17 +74,21 @@ export default async function SubscriptionProductPage({
             <div className="min-w-0">
               <h1 className="text-3xl font-black tracking-tight sm:text-4xl">{product.name}</h1>
               {product.tagline && <p className="muted mt-2 text-lg leading-8">{product.tagline}</p>}
-              <div className="mt-3 flex flex-wrap gap-2">
-                <span className="badge badge-neutral">
-                  {isInvite
-                    ? "On your own account"
-                    : isShared
-                      ? "Shared account"
-                      : "Personal account"}
+
+              {/* RMT Game Shop style Left-Side Badges */}
+              <div className="mt-4 flex flex-wrap items-center gap-2.5 text-xs font-bold">
+                <span className="inline-flex items-center gap-1.5 rounded-full bg-blue-500/10 px-3 py-1.5 text-blue-400 border border-blue-500/20">
+                  <svg className="h-3.5 w-3.5 fill-current" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M10 1.8L3 4.5v5c0 4.6 3.1 8.9 7 9.8 3.9-.9 7-5.2 7-9.8v-5l-7-2.7zm3.7 6.9l-4.2 4.2a1 1 0 01-1.4 0L6.3 11a1 1 0 111.4-1.4l1.1 1.1 3.5-3.5a1 1 0 111.4 1.4z" clipRule="evenodd" />
+                  </svg>
+                  Safety Guarantee
                 </span>
-                {product.category && (
-                  <span className="badge badge-neutral">{product.category}</span>
-                )}
+                <span className="inline-flex items-center gap-1.5 rounded-full bg-amber-500/10 px-3 py-1.5 text-amber-400 border border-amber-500/20">
+                  ⚡ Instant Delivery
+                </span>
+                <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-500/10 px-3 py-1.5 text-emerald-400 border border-emerald-500/20">
+                  🌐 Global Region
+                </span>
               </div>
             </div>
           </div>
