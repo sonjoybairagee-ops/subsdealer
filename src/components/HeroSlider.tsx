@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useState, useEffect, useCallback, useRef } from "react";
 
 // ---------------------------------------------------------------------------
-// Graphic Hero Banners — Auto-playing cinematic zoom & crossfade slider
+// Graphic Hero Banners — Horizontal Slider + Active Item Zoom (100 -> 110)
 // ---------------------------------------------------------------------------
 const slides = [
   {
@@ -39,7 +39,7 @@ const slides = [
   },
 ];
 
-const AUTOPLAY_MS = 4500;
+const AUTOPLAY_MS = 4000;
 
 export function HeroSlider() {
   const [active, setActive] = useState(0);
@@ -109,37 +109,38 @@ export function HeroSlider() {
       onKeyDown={onKeyDown}
       tabIndex={0}
     >
-      {/* Stacked Slides with Cinematic Zoom + Smooth Crossfade */}
-      {slides.map((slide, i) => {
-        const isActive = i === active;
-        return (
-          <div
-            key={slide.id}
-            className={`absolute inset-0 h-full w-full transition-opacity duration-1000 ease-in-out ${
-              isActive
-                ? "opacity-100 z-10 pointer-events-auto"
-                : "opacity-0 z-0 pointer-events-none"
-            }`}
-            aria-hidden={!isActive}
-          >
-            <Link
-              href={slide.href}
-              className="block relative h-full w-full overflow-hidden rounded-[20px]"
-              tabIndex={isActive ? 0 : -1}
+      {/* Horizontal Sliding Track */}
+      <div
+        className="flex h-full w-full transition-transform duration-700 ease-in-out"
+        style={{ transform: `translateX(-${active * 100}%)` }}
+      >
+        {slides.map((slide, i) => {
+          const isActive = i === active;
+          return (
+            <div
+              key={slide.id}
+              className="h-full w-full min-w-full shrink-0 overflow-hidden"
+              aria-hidden={!isActive}
             >
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src={slide.bannerImage}
-                alt={slide.title}
-                className={`h-full w-full object-cover transition-transform duration-[4500ms] ease-out ${
-                  isActive ? "scale-106" : "scale-100"
-                }`}
-                loading={i === 0 ? "eager" : "lazy"}
-              />
-            </Link>
-          </div>
-        );
-      })}
+              <Link
+                href={slide.href}
+                className="block relative h-full w-full overflow-hidden rounded-[20px]"
+                tabIndex={isActive ? 0 : -1}
+              >
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={slide.bannerImage}
+                  alt={slide.title}
+                  className={`h-full w-full object-cover rounded-[20px] transition-transform duration-[4000ms] ease-out ${
+                    isActive ? "scale-110" : "scale-100"
+                  }`}
+                  loading={i === 0 ? "eager" : "lazy"}
+                />
+              </Link>
+            </div>
+          );
+        })}
+      </div>
 
       {/* Navigation Arrows */}
       <button
