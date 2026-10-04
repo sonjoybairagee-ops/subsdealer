@@ -408,6 +408,7 @@ export function getProductThumbnail(slug: string, dbThumbnailUrl?: string | null
     "canva-pro",
     "canva",
     "chatgpt-plus",
+    "chatgpt-plus-shared",
     "chatgpt-go",
     "chatgpt",
     "pubg",
