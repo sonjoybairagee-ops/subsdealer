@@ -1,19 +1,5 @@
 -- ============================================================
--- Subsdealer - PUBG Mobile UC: Synchronize with RMT Game Shop rates
---
--- Exact rates from RMT Game Shop (rmtgameshop.com):
---   1. 60 UC                  -> ৳120
---   2. 325 UC                 -> ৳640
---   3. 660 UC                 -> ৳1280
---   4. 1800 UC                -> ৳3200
---   5. 3850 UC                -> ৳6390
---   6. 8100 UC                -> ৳12780
---   7. Elite Pass (LV 50)     -> ৳720
---   8. Elite Pass (LV 100)    -> ৳1460
---   9. Elite Pass Plus 100    -> ৳3590
---
--- Paste the whole file into the Supabase SQL Editor and press Run.
--- Safe to run more than once.
+-- PUBG Mobile UC — Synchronize with RMT Game Shop rates
 -- ============================================================
 
 begin;
