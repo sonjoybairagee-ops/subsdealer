@@ -364,6 +364,7 @@ export const PRODUCT_CATEGORIES = [
   "education",
   "software",
   "games",
+  "game_keys",
   "other",
 ] as const;
 

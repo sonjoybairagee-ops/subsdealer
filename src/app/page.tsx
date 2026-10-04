@@ -13,12 +13,13 @@ const BRAND = process.env.NEXT_PUBLIC_BRAND_NAME || "Subsdealer";
 // subscription-style categories. A category with no products is skipped.
 const HOME_SECTIONS = [
   { key: "games", label: "Game Top-Up", icon: "🎮" },
+  { key: "game_keys", label: "Game Keys", icon: "🔑" },
   { key: "ai", label: "AI Tools", icon: "🤖" },
   { key: "design", label: "Design", icon: "🎨" },
   { key: "video", label: "Video", icon: "🎬" },
   { key: "productivity", label: "Productivity", icon: "📊" },
   { key: "education", label: "Education", icon: "📚" },
-  { key: "software", label: "Software & Keys", icon: "🔑" },
+  { key: "software", label: "Software", icon: "💻" },
   { key: "other", label: "More", icon: "✨" },
 ];
 
