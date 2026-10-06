@@ -111,7 +111,7 @@ export default function UserEmailPortal() {
   if (!isUnlocked) {
     return (
       <div className="bg-[#141416] border border-[#27272a] rounded-xl p-8 text-white shadow-xl max-w-xl mx-auto space-y-6 text-center">
-        <div className="w-14 h-14 bg-amber-500/10 border border-amber-500/20 rounded-2xl flex items-center justify-center mx-auto text-amber-500">
+        <div className="w-14 h-14 bg-red-500/10 border border-red-500/20 rounded-2xl flex items-center justify-center mx-auto text-red-500">
           <Lock className="w-7 h-7" />
         </div>
         <div>
@@ -129,7 +129,7 @@ export default function UserEmailPortal() {
               placeholder="Enter Unique Access Key (e.g. SUBS-9842-ADOBE)"
               value={accessKeyInput}
               onChange={(e) => setAccessKeyInput(e.target.value)}
-              className="w-full bg-[#18181b] border border-[#27272a] rounded-lg pl-10 pr-4 py-3 text-xs text-zinc-100 placeholder-zinc-600 focus:outline-none focus:border-amber-500 transition font-mono uppercase"
+              className="w-full bg-[#18181b] border border-[#27272a] rounded-lg pl-10 pr-4 py-3 text-xs text-zinc-100 placeholder-zinc-600 focus:outline-none focus:border-[#e5243b] transition font-mono uppercase"
             />
           </div>
 
@@ -138,7 +138,7 @@ export default function UserEmailPortal() {
           <button
             onClick={() => verifyAndUnlock(accessKeyInput)}
             disabled={loading}
-            className="w-full bg-amber-600 hover:bg-amber-500 text-black font-bold text-xs py-3 rounded-lg transition flex items-center justify-center gap-2 shadow-lg shadow-amber-600/10 cursor-pointer"
+            className="w-full bg-gradient-to-r from-[#e5243b] to-[#b91c1c] hover:from-[#c81e33] hover:to-[#991b1b] text-white font-bold text-xs py-3 rounded-lg transition flex items-center justify-center gap-2 shadow-lg shadow-[#e5243b]/25 cursor-pointer"
           >
             {loading ? <RefreshCw className="w-4 h-4 animate-spin" /> : <Unlock className="w-4 h-4" />}
             Unlock Portal Access

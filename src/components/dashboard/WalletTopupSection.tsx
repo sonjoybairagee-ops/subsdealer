@@ -68,9 +68,9 @@ export function WalletTopupSection({ currentBalance }: WalletTopupProps) {
   return (
     <div className="space-y-6 text-white font-sans">
       {/* Balance Card */}
-      <div className="rounded-2xl border border-white/10 bg-[#161922] p-6 shadow-2xl flex flex-wrap items-center justify-between gap-4">
+      <div className="rounded-2xl border border-[#e5243b]/20 bg-[#161922] p-6 shadow-2xl flex flex-wrap items-center justify-between gap-4">
         <div>
-          <div className="flex items-center gap-2 text-amber-400 text-xs font-bold uppercase tracking-wider">
+          <div className="flex items-center gap-2 text-[#ff4d6d] text-xs font-bold uppercase tracking-wider">
             <Wallet className="w-4 h-4" /> Account Wallet Balance
           </div>
           <h2 className="text-3xl font-extrabold text-white mt-1">
@@ -92,7 +92,7 @@ export function WalletTopupSection({ currentBalance }: WalletTopupProps) {
       <div className="rounded-2xl border border-white/10 bg-[#161922] p-6 shadow-2xl space-y-5">
         <div className="border-b border-white/10 pb-4">
           <h3 className="text-lg font-bold text-white flex items-center gap-2">
-            <CreditCard className="w-5 h-5 text-red-500" /> Add Funds via bKash / Nagad / Rocket
+            <CreditCard className="w-5 h-5 text-[#e5243b]" /> Add Funds via bKash / Nagad / Rocket
           </h3>
           <p className="text-xs text-neutral-400 mt-0.5">
             Send Money / Cash In to our merchant number and submit your TrxID below to credit your wallet.
@@ -108,7 +108,7 @@ export function WalletTopupSection({ currentBalance }: WalletTopupProps) {
               <button
                 type="button"
                 onClick={() => copyToClipboard(bkashNumber)}
-                className="text-xs text-pink-300 hover:text-white flex items-center gap-1"
+                className="text-xs text-pink-300 hover:text-white flex items-center gap-1 cursor-pointer"
               >
                 {copiedNumber === bkashNumber ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
                 Copy
@@ -123,7 +123,7 @@ export function WalletTopupSection({ currentBalance }: WalletTopupProps) {
               <button
                 type="button"
                 onClick={() => copyToClipboard(nagadNumber)}
-                className="text-xs text-orange-300 hover:text-white flex items-center gap-1"
+                className="text-xs text-orange-300 hover:text-white flex items-center gap-1 cursor-pointer"
               >
                 {copiedNumber === nagadNumber ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
                 Copy
@@ -154,7 +154,7 @@ export function WalletTopupSection({ currentBalance }: WalletTopupProps) {
             <select
               value={paymentMethod}
               onChange={(e) => setPaymentMethod(e.target.value)}
-              className="w-full rounded-xl bg-black/60 border border-white/10 px-3.5 py-2.5 text-xs text-white focus:outline-none focus:border-red-500"
+              className="w-full rounded-xl bg-black/60 border border-white/10 px-3.5 py-2.5 text-xs text-white focus:outline-none focus:border-[#e5243b]"
             >
               <option value="bKash">bKash</option>
               <option value="Nagad">Nagad</option>
@@ -171,7 +171,7 @@ export function WalletTopupSection({ currentBalance }: WalletTopupProps) {
               value={amount}
               onChange={(e) => setAmount(e.target.value)}
               placeholder="e.g. 500"
-              className="w-full rounded-xl bg-black/60 border border-white/10 px-3.5 py-2.5 text-xs text-white focus:outline-none focus:border-red-500 font-mono"
+              className="w-full rounded-xl bg-black/60 border border-white/10 px-3.5 py-2.5 text-xs text-white focus:outline-none focus:border-[#e5243b] font-mono"
             />
           </div>
 
@@ -184,7 +184,7 @@ export function WalletTopupSection({ currentBalance }: WalletTopupProps) {
               value={trxId}
               onChange={(e) => setTrxId(e.target.value)}
               placeholder="e.g. 9J4K2L8M1N"
-              className="w-full rounded-xl bg-black/60 border border-white/10 px-3.5 py-2.5 text-xs text-amber-400 font-mono uppercase focus:outline-none focus:border-red-500"
+              className="w-full rounded-xl bg-black/60 border border-white/10 px-3.5 py-2.5 text-xs text-[#ff4d6d] font-mono uppercase focus:outline-none focus:border-[#e5243b]"
             />
           </div>
 

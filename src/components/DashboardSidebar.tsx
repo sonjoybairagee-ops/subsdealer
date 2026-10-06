@@ -98,13 +98,13 @@ export function DashboardSidebar({ profile, activeTab }: DashboardSidebarProps) 
               <Link
                 key={item.id}
                 href={`/dashboard?tab=${item.id}`}
-                className={`flex items-center gap-3 rounded-xl px-4 py-3 text-xs font-semibold transition ${
+                className={`flex items-center gap-3 rounded-xl px-4 py-3 text-xs font-bold transition ${
                   isActive
-                    ? "bg-[#ffb703] text-[#0d0f14] shadow-md shadow-[#ffb703]/20"
+                    ? "bg-gradient-to-r from-[#e5243b] to-[#b91c1c] text-white shadow-lg shadow-[#e5243b]/25"
                     : "bg-white/[0.04] text-white/80 hover:bg-white/[0.08] hover:text-white"
                 }`}
               >
-                <span className={isActive ? "text-[#0d0f14]" : "text-white/60"}>
+                <span className={isActive ? "text-white" : "text-white/60"}>
                   {item.icon}
                 </span>
                 <span>{item.label}</span>
@@ -115,7 +115,7 @@ export function DashboardSidebar({ profile, activeTab }: DashboardSidebarProps) 
           {/* Logout Button */}
           <button
             onClick={handleSignOut}
-            className="flex items-center gap-3 rounded-xl bg-white/[0.04] px-4 py-3 text-xs font-semibold text-white/80 transition hover:bg-red-500/20 hover:text-red-400"
+            className="flex items-center gap-3 rounded-xl bg-white/[0.04] px-4 py-3 text-xs font-semibold text-white/80 transition hover:bg-red-500/20 hover:text-red-400 cursor-pointer"
           >
             <svg className="h-4 w-4 text-white/60" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
@@ -124,10 +124,10 @@ export function DashboardSidebar({ profile, activeTab }: DashboardSidebarProps) 
           </button>
         </nav>
 
-        {/* Need Help Box (Matching Screenshot) */}
-        <div className="mt-6 rounded-xl bg-[#0d0f14] p-4 text-white">
+        {/* Need Help Box (Red Theme) */}
+        <div className="mt-6 rounded-xl bg-[#0d0f14] border border-[#e5243b]/20 p-4 text-white">
           <div className="flex items-center gap-3">
-            <div className="flex h-9 w-9 items-center justify-center rounded-full bg-[#ffb703] text-[#0d0f14]">
+            <div className="flex h-9 w-9 items-center justify-center rounded-full bg-[#e5243b] text-white shadow-md shadow-[#e5243b]/30">
               <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192l-3.536 3.536M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-5 0a4 4 0 11-8 0 4 4 0 018 0z" />
               </svg>
@@ -138,7 +138,7 @@ export function DashboardSidebar({ profile, activeTab }: DashboardSidebarProps) 
                 href="https://wa.me/8801700000000"
                 target="_blank"
                 rel="noreferrer"
-                className="text-[11px] text-[#ffb703] hover:underline"
+                className="text-[11px] text-[#ff4d6d] hover:text-white hover:underline"
               >
                 Chat with support →
               </a>
