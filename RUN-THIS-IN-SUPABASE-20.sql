@@ -42,7 +42,7 @@ on conflict (slug) do update set
 
 -- Ensure CapCut Pro Private Product
 insert into public.sub_products
-  (slug, name, tagline, description, category, access_type, delivery_type,
+  (slug, name, tagline, description, thumbnail_url, category, access_type, delivery_type,
    login_url, features, terms_note, sort_order, is_active)
 values
   (
@@ -50,6 +50,7 @@ values
     'CapCut Pro (Private Account)',
     'Full Private CapCut Pro Account — 100% private login on your email or full private credential.',
     E'CapCut Pro Private Account gives you full private ownership with zero session sharing.\n\nUnlocks all CapCut Pro features, 100GB cloud storage, 4K 60fps export, Auto Captions, and AI tools with 100% private login.',
+    '/products/capcut-pro-private.png',
     'video',
     'personal',
     'credential',
@@ -62,6 +63,7 @@ values
 on conflict (slug) do update set
   name = EXCLUDED.name,
   tagline = EXCLUDED.tagline,
+  thumbnail_url = EXCLUDED.thumbnail_url,
   features = EXCLUDED.features;
 
 -- Update Plans for CapCut Pro Shared
