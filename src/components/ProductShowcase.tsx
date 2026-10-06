@@ -39,6 +39,15 @@ const MULTI_REGION_GAMES: Record<
       "valorant-my": { regionLabel: "Malaysia", flag: "🇲🇾" },
     },
   },
+  "capcut-pro": {
+    groupTitle: "CapCut Pro",
+    parentSlug: "capcut-pro",
+    parentName: "CapCut Pro",
+    options: {
+      "capcut-pro": { regionLabel: "Shared (1 Device)", flag: "👤" },
+      "capcut-pro-private": { regionLabel: "Private Account", flag: "👑" },
+    },
+  },
 };
 
 export function ProductShowcase({ items }: { items: ShowcaseItem[] }) {

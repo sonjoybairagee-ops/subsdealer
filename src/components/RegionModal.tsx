@@ -61,7 +61,7 @@ export function RegionModal({
                 {group.title}
               </h3>
               <p className="text-xs font-semibold text-white/60 sm:text-sm">
-                Select your region
+                Select your package option
               </p>
             </div>
           </div>
