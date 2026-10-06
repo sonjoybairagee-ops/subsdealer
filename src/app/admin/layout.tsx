@@ -9,7 +9,10 @@ export default async function AdminLayout({ children }: { children: React.ReactN
   const groups: { heading: string | null; links: [string, string, string][] }[] = [
     {
       heading: null,
-      links: [["◉", "Subscriptions", "/admin/subscriptions"]],
+      links: [
+        ["📊", "Overview", "/admin/overview"],
+        ["◉", "Subscriptions", "/admin/subscriptions"],
+      ],
     },
     {
       heading: "Money",

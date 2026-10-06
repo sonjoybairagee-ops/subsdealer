@@ -1,0 +1,68 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 400" width="300" height="400">
+  <defs>
+    <!-- Main Gradient Background -->
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0284c7" />
+      <stop offset="100%" stop-color="#075985" />
+    </linearGradient>
+
+    <!-- Metallic Edge Shimmer -->
+    <linearGradient id="edgeGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#38bdf8" stop-opacity="0.8" />
+      <stop offset="50%" stop-color="#ffffff" stop-opacity="0.3" />
+      <stop offset="100%" stop-color="#38bdf8" stop-opacity="0.4" />
+    </linearGradient>
+
+    <!-- Card Inner Glow -->
+    <linearGradient id="glowGrad" x1="50%" y1="0%" x2="50%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.15" />
+      <stop offset="100%" stop-color="#000000" stop-opacity="0.5" />
+    </linearGradient>
+  </defs>
+
+  <!-- Card Background with Outer Border & Shadow -->
+  <rect x="4" y="4" width="292" height="392" rx="20" ry="20" fill="url(#bgGrad)" stroke="url(#edgeGrad)" stroke-width="2.5" />
+  <rect x="6" y="6" width="288" height="388" rx="18" ry="18" fill="url(#glowGrad)" />
+
+  <!-- Background Watermark -->
+  <g opacity="0.08" transform="translate(150, 200) scale(1.8)">
+    <circle cx="50" cy="50" r="40" fill="#0084ff"/><text x="50" y="58" font-family="sans-serif" font-size="28" font-weight="900" fill="#ffffff" text-anchor="middle">imo</text>
+  </g>
+
+  <!-- Top Header Ribbon / Tag -->
+  <rect x="24" y="24" width="252" height="24" rx="6" fill="#000000" fill-opacity="0.4" stroke="#38bdf8" stroke-opacity="0.3" stroke-width="1" />
+  <text x="150" y="40" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="10" font-weight="800" fill="#38bdf8" text-anchor="middle" letter-spacing="2">
+    OFFICIAL IMO TOPUP
+  </text>
+
+  <!-- Center Logo & Emblem Area -->
+  <g transform="translate(150, 175)">
+    <!-- Glow Ring -->
+    <circle cx="0" cy="0" r="55" fill="#38bdf8" fill-opacity="0.15" />
+    <circle cx="0" cy="0" r="46" fill="#000000" fill-opacity="0.5" stroke="#38bdf8" stroke-opacity="0.4" stroke-width="1.5" />
+    <!-- Logo SVG -->
+    <g transform="translate(-30, -30) scale(0.6)">
+      <circle cx="50" cy="50" r="40" fill="#0084ff"/><text x="50" y="58" font-family="sans-serif" font-size="28" font-weight="900" fill="#ffffff" text-anchor="middle">imo</text>
+    </g>
+  </g>
+
+  <!-- Currency / Country Badge if present -->
+  <g transform="translate(220, 70)">
+          <rect x="-30" y="-12" width="60" height="24" rx="12" fill="#38bdf8" fill-opacity="0.9" />
+          <text x="0" y="4" font-family="sans-serif" font-size="11" font-weight="900" fill="#000000" text-anchor="middle">IMO</text>
+        </g>
+
+  <!-- Bottom Brand Title & Subtitle Section -->
+  <rect x="16" y="295" width="268" height="84" rx="14" fill="#0d1117" fill-opacity="0.85" stroke="#ffffff" stroke-opacity="0.1" stroke-width="1" />
+  
+  <text x="150" y="330" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="17" font-weight="900" fill="#ffffff" text-anchor="middle" letter-spacing="0.5">
+    IMO DIAMONDS
+  </text>
+  
+  <text x="150" y="354" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="12" font-weight="600" fill="#38bdf8" text-anchor="middle">
+    DIRECT PLAYER TOPUP
+  </text>
+
+  <!-- Security Hologram Bar at bottom -->
+  <line x1="40" y1="368" x2="260" y2="368" stroke="url(#edgeGrad)" stroke-width="1.5" stroke-dasharray="8 4" opacity="0.6" />
+</svg>

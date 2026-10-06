@@ -1,28 +1,48 @@
-import Link from "next/link";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
-import { SubscriptionCard, type SubscriptionCardData } from "@/components/SubscriptionCard";
-import {
-  formatBdt,
-  formatDhakaDate,
-  orderStatusMeta,
-  paymentMethodLabel,
-  type SubOrderStatus,
-} from "@/lib/subscriptions";
+import { createAdminClient } from "@/lib/supabase/admin";
+import { getProfile } from "@/lib/auth";
+
+import { DashboardSidebar } from "@/components/DashboardSidebar";
+import { DashboardOverview } from "@/components/dashboard/DashboardOverview";
+import { DashboardOrders } from "@/components/dashboard/DashboardOrders";
+import { DashboardWallet } from "@/components/dashboard/DashboardWallet";
+import { DashboardAccountDetails } from "@/components/dashboard/DashboardAccountDetails";
+import { DashboardLicenseKeys } from "@/components/dashboard/DashboardLicenseKeys";
+import { type SubscriptionCardData } from "@/components/SubscriptionCard";
 
 export const dynamic = "force-dynamic";
 
-export default async function DashboardSubscriptionsPage() {
+interface DashboardPageProps {
+  searchParams: Promise<{ tab?: string }>;
+}
+
+export default async function DashboardPage({ searchParams }: DashboardPageProps) {
+  const params = await searchParams;
+  const activeTab = params.tab || "overview";
+
   const supabase = await createClient();
   const {
     data: { user },
   } = await supabase.auth.getUser();
+
   if (!user) redirect("/login");
 
-  // Note what is NOT selected: nothing from sub_credentials. The card asks
-  // /api/subscriptions/reveal for the login only when the customer clicks,
-  // so a password never travels with the page HTML.
-  const [subsRes, ordersRes] = await Promise.all([
+  const profile = await getProfile();
+  const adminClient = createAdminClient();
+
+  // Fetch Wallet Balance & Transactions using Admin Client (bypassing client table restricts safely on server)
+  const [walletRes, walletTxnsRes, subsRes, ordersRes, licenseKeysRes] = await Promise.all([
+    adminClient
+      .from("user_wallets")
+      .select("balance_bdt")
+      .eq("user_id", user.id)
+      .maybeSingle(),
+    adminClient
+      .from("wallet_transactions")
+      .select("id, amount_bdt, type, balance_after, method, sender_number, txn_ref, status, reject_reason, created_at")
+      .eq("user_id", user.id)
+      .order("created_at", { ascending: false }),
     supabase
       .from("subscriptions")
       .select(
@@ -36,9 +56,21 @@ export default async function DashboardSubscriptionsPage() {
         "id, status, amount_bdt, method, txn_ref, created_at, reject_reason, hold_reason, sub_products(name, slug), sub_plans(name)",
       )
       .eq("user_id", user.id)
-      .in("status", ["pending", "on_hold", "rejected"])
       .order("created_at", { ascending: false }),
+    adminClient
+      .from("license_keys")
+      .select("id, order_id, assigned_at, sub_products(name)")
+      .eq("user_id", user.id)
+      .eq("status", "assigned")
+      .order("assigned_at", { ascending: false }),
   ]);
+
+  const walletBalance = Number(walletRes.data?.balance_bdt || 0);
+  const walletTransactions = (walletTxnsRes.data || []).map((t: any) => ({
+    ...t,
+    amount_bdt: Number(t.amount_bdt),
+    balance_after: Number(t.balance_after),
+  }));
 
   const subscriptions: SubscriptionCardData[] = (subsRes.data ?? []).map((s: any) => ({
     id: s.id,
@@ -57,116 +89,38 @@ export default async function DashboardSubscriptionsPage() {
     teamName: s.sub_teams?.name ?? null,
   }));
 
-  const orders = ordersRes.data ?? [];
-  const active = subscriptions.filter((s) => s.status === "active" || s.status === "pending_credential");
-  const past = subscriptions.filter((s) => !active.includes(s));
+  const orders = (ordersRes.data ?? []).map((o: any) => ({
+    ...o,
+    amount_bdt: Number(o.amount_bdt),
+  }));
+
+  const licenseKeys = (licenseKeysRes.data ?? []).map((k: any) => ({
+    id: k.id,
+    order_id: k.order_id,
+    product_name: k.sub_products?.name || "Product",
+    assigned_at: k.assigned_at,
+  }));
 
   return (
-    <div className="space-y-10">
-      <header className="flex flex-wrap items-end justify-between gap-4">
-        <div>
-          <p className="eyebrow">My account</p>
-          <h1 className="mt-2 text-3xl font-black">Subscriptions</h1>
-          <p className="muted mt-2">
-            Your premium tool logins, and anything waiting on verification.
-          </p>
-        </div>
-        <Link href="/subscriptions" className="btn-primary">
-          Browse subscriptions
-        </Link>
-      </header>
+    <div className="flex flex-col lg:flex-row gap-8 items-start">
+      {/* Sidebar Component */}
+      <DashboardSidebar profile={profile} activeTab={activeTab} />
 
-      {(subsRes.error || ordersRes.error) && (
-        <div className="card border border-[#ff6b6b]/40 p-5">
-          <p className="font-bold text-[#ff8c8c]">Could not load your subscriptions</p>
-          <p className="muted mt-2 text-sm">
-            {subsRes.error?.message ?? ordersRes.error?.message}
-          </p>
-        </div>
-      )}
-
-      {/* ---- payments awaiting review ---- */}
-      {orders.length > 0 && (
-        <section>
-          <h2 className="mb-4 text-lg font-black text-white">Payments</h2>
-          <div className="space-y-3">
-            {orders.map((o: any) => {
-              const meta = orderStatusMeta(o.status as SubOrderStatus);
-              return (
-                <div key={o.id} className="card flex flex-wrap items-center justify-between gap-4 p-5">
-                  <div className="min-w-0">
-                    <div className="flex flex-wrap items-center gap-2">
-                      <p className="font-black text-white">{o.sub_products?.name}</p>
-                      <span className={`badge badge-${meta.tone === "green" ? "green" : meta.tone}`}>
-                        {meta.label}
-                      </span>
-                    </div>
-                    <p className="muted mt-1 text-sm">
-                      {o.sub_plans?.name} · {formatBdt(o.amount_bdt)} ·{" "}
-                      {paymentMethodLabel(o.method)}
-                      {o.txn_ref ? ` · ${o.txn_ref}` : ""}
-                    </p>
-                    <p className="muted mt-1 text-xs">
-                      Submitted {formatDhakaDate(o.created_at)}
-                    </p>
-                    {o.status === "rejected" && o.reject_reason && (
-                      <p className="mt-2 text-sm text-[#ff9d9d]">{o.reject_reason}</p>
-                    )}
-                    {o.status === "on_hold" && o.hold_reason && (
-                      <p className="mt-2 text-sm text-[#ffcf8c]">{o.hold_reason}</p>
-                    )}
-                  </div>
-
-                  {o.status === "rejected" ? (
-                    <Link href={`/subscriptions/${o.sub_products?.slug ?? ""}`} className="btn-secondary">
-                      Try again
-                    </Link>
-                  ) : (
-                    <p className="muted max-w-xs text-right text-xs leading-5">
-                      We verify payments by hand, usually within a few hours during the day.
-                    </p>
-                  )}
-                </div>
-              );
-            })}
-          </div>
-        </section>
-      )}
-
-      {/* ---- live subscriptions ---- */}
-      <section>
-        <h2 className="mb-4 text-lg font-black text-white">Active</h2>
-        {active.length === 0 ? (
-          <div className="card p-10 text-center">
-            <p className="text-lg font-bold text-white">No active subscriptions</p>
-            <p className="muted mx-auto mt-2 max-w-md text-sm leading-6">
-              Adobe Creative Cloud, Canva Pro, ChatGPT Plus and more — at local pricing, paid
-              with bKash.
-            </p>
-            <Link href="/subscriptions" className="btn-primary mt-6 inline-block">
-              Browse subscriptions →
-            </Link>
-          </div>
-        ) : (
-          <div className="space-y-5">
-            {active.map((s) => (
-              <SubscriptionCard key={s.id} sub={s} />
-            ))}
-          </div>
+      {/* Main Tab Content */}
+      <main className="flex-1 w-full min-w-0">
+        {activeTab === "overview" && (
+          <DashboardOverview subscriptions={subscriptions} walletBalance={walletBalance} />
         )}
-      </section>
-
-      {/* ---- history ---- */}
-      {past.length > 0 && (
-        <section>
-          <h2 className="mb-4 text-lg font-black text-white">Past</h2>
-          <div className="space-y-5">
-            {past.map((s) => (
-              <SubscriptionCard key={s.id} sub={s} />
-            ))}
-          </div>
-        </section>
-      )}
+        {activeTab === "orders" && <DashboardOrders orders={orders} />}
+        {activeTab === "wallet" && (
+          <DashboardWallet balance={walletBalance} transactions={walletTransactions} />
+        )}
+        {activeTab === "account" && <DashboardAccountDetails profile={profile} />}
+        {activeTab === "license-key" && <DashboardLicenseKeys keys={licenseKeys} />}
+        {!["overview", "orders", "wallet", "account", "license-key"].includes(activeTab) && (
+          <DashboardOverview subscriptions={subscriptions} walletBalance={walletBalance} />
+        )}
+      </main>
     </div>
   );
 }

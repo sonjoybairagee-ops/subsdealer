@@ -427,7 +427,26 @@ export function getProductThumbnail(slug: string, dbThumbnailUrl?: string | null
     "leonardo-ai",
     "windows-11",
     "windows-11-pro",
+    "genshin-impact",
+    "pubg-mobile-uc",
+    "telegram-stars",
+    "telegram-premium",
+    "steam-wallet-global",
+    "steam-wallet-us",
+    "steam-wallet-tr",
+    "roblox-global",
+    "roblox-robux-us",
+    "google-play-us",
+    "google-play-tr",
+    "playstation-us",
+    "nintendo-us",
   ];
+
+  const svgSlugs: string[] = [];
+
+  if (svgSlugs.includes(slug)) {
+    return `/products/${slug}.svg`;
+  }
 
   if (localSlugs.includes(slug)) {
     return `/products/${slug}.png`;

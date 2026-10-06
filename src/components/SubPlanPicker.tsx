@@ -11,14 +11,30 @@ import { describeDuration, discountPercent, formatBdt, type SubPlan } from "@/li
 export function SubPlanPicker({
   plans,
   productName,
+  productSlug = "",
   features,
   signedIn,
 }: {
   plans: SubPlan[];
   productName: string;
+  productSlug?: string;
   features: string[];
   signedIn: boolean;
 }) {
+  const GAME_SLUGS = [
+    "pubg",
+    "free-fire",
+    "mobile-legends",
+    "genshin",
+    "delta-force",
+    "valorant",
+    "farlight",
+    "roblox",
+    "game-",
+  ];
+  const isGame = GAME_SLUGS.some((s) => productSlug.toLowerCase().startsWith(s));
+  const [playerId, setPlayerId] = useState("");
+
   // Default to the best value per day rather than the lowest sticker price —
   // that is the plan most people end up choosing anyway.
   const bestValueId = useMemo(() => {
@@ -108,11 +124,39 @@ export function SubPlanPicker({
         </div>
       )}
 
+      {/* ---- Player UID Input for Game Top-Ups ---- */}
+      {isGame && (
+        <div className="border-t border-white/[.06] p-6 bg-[#121620]">
+          <label className="block">
+            <span className="mb-2 flex items-center justify-between text-xs font-bold text-white">
+              <span className="flex items-center gap-1.5 text-[#ff8ebc]">
+                🎮 Player UID / User ID
+              </span>
+              <span className="text-[10px] font-black uppercase text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/20">
+                ✓ Auto Delivery
+              </span>
+            </span>
+            <input
+              type="text"
+              className="input font-mono text-sm border-white/20 focus:border-[#e5243b]"
+              placeholder="e.g. 51965318109"
+              value={playerId}
+              onChange={(e) => setPlayerId(e.target.value)}
+            />
+          </label>
+          <p className="muted mt-2 text-xs leading-relaxed">
+            In-game Profile → Player ID কপি করে এখানে বসান। ভুল ID দিলে অন্য একাউন্টে টপ-আপ হয়ে যেতে পারে।
+          </p>
+        </div>
+      )}
+
       {/* ---- cta ---- */}
       <div className="border-t border-white/[.06] p-6">
         {signedIn ? (
           <Link
-            href={`/subscriptions/checkout/${selected.id}`}
+            href={`/subscriptions/checkout/${selected.id}${
+              playerId.trim() ? `?inviteEmail=${encodeURIComponent(playerId.trim())}` : ""
+            }`}
             className="btn-primary block w-full text-center"
           >
             Continue to payment →

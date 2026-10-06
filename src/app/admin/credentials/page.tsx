@@ -1,5 +1,6 @@
 import { createAdminClient } from "@/lib/supabase/admin";
 import { SubCredentialsManager } from "@/components/SubCredentialsManager";
+import { AdminAccountAssigner } from "@/components/AdminAccountAssigner";
 import { hasEncryptionKey } from "@/lib/crypto";
 
 export const dynamic = "force-dynamic";
@@ -42,10 +43,9 @@ export default async function SubCredentialsPage() {
     <div className="space-y-8">
       <div>
         <p className="eyebrow">Credential Pool</p>
-        <h1 className="mt-2 text-3xl font-black">Credentials</h1>
+        <h1 className="mt-2 text-3xl font-black">Credentials & Subscription Accounts</h1>
         <p className="muted mt-2 max-w-2xl">
-          The actual logins you hand out. Passwords are encrypted at rest and only decrypted
-          on request — every reveal, by you or by a customer, is written to the audit trail.
+          The actual logins and shared subscription email accounts you hand out to customers.
         </p>
       </div>
 
@@ -55,6 +55,9 @@ export default async function SubCredentialsPage() {
           <p className="muted mt-2 text-sm">{error.message}</p>
         </div>
       )}
+
+      {/* Admin Account Assigner Component */}
+      <AdminAccountAssigner />
 
       <SubCredentialsManager
         products={(productsRes.data ?? []) as any[]}

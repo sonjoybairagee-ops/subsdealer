@@ -4,9 +4,13 @@ export interface Profile {
   id: string;
   email: string | null;
   full_name: string | null;
+  first_name?: string | null;
+  last_name?: string | null;
+  display_name?: string | null;
   phone: string | null;
   role: "user" | "admin";
   is_banned: boolean;
+  wallet_balance?: number;
   created_at: string;
 }
 

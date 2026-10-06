@@ -171,6 +171,13 @@ export async function POST(req: Request) {
     amount_bdt: order.amount_bdt,
   });
 
+  // Trigger FazerCards Auto Fulfillment
+  import("@/lib/auto-fulfill").then(({ processAutoFulfillment }) => {
+    processAutoFulfillment({ orderId }).catch((err) =>
+      console.error("[AutoFulfill Admin Approve Error]:", err)
+    );
+  });
+
   return NextResponse.json({
     ok: true,
     subscription,

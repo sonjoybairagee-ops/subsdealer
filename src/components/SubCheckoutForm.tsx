@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { callApi, copyToClipboard } from "@/lib/api-client";
 import { CheckoutSteps } from "@/components/CheckoutSteps";
+import { useSearchParams } from "next/navigation";
 import {
   describeDuration,
   discountPercent,
@@ -40,9 +41,13 @@ export function SubCheckoutForm({
   bkashNumber: string;
 }) {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const initialPlayerId = searchParams.get("inviteEmail") || "";
+
+  const [paymentMethod, setPaymentMethod] = useState<"bkash" | "wallet">("bkash");
   const [txnRef, setTxnRef] = useState("");
   const [senderNumber, setSenderNumber] = useState("");
-  const [inviteEmail, setInviteEmail] = useState("");
+  const [inviteEmail, setInviteEmail] = useState(initialPlayerId);
   const [file, setFile] = useState<File | null>(null);
   const [agreed, setAgreed] = useState(false);
   const [busy, setBusy] = useState(false);
@@ -60,8 +65,18 @@ export function SubCheckoutForm({
   const isManaged = product.slug.startsWith("chatgpt");
   // Game top-ups (PUBG UC, etc.) collect a Player ID at checkout instead of
   // an email, and we top the account up directly.
-  const GAME_SLUGS = ["pubg", "free-fire", "mobile-legends", "genshin", "delta-force", "valorant", "farlight", "game-"];
-  const isGame = GAME_SLUGS.some((s) => product.slug.startsWith(s));
+  const GAME_SLUGS = [
+    "pubg",
+    "free-fire",
+    "mobile-legends",
+    "genshin",
+    "delta-force",
+    "valorant",
+    "farlight",
+    "roblox",
+    "game-",
+  ];
+  const isGame = GAME_SLUGS.some((s) => product.slug.toLowerCase().startsWith(s));
   const WHATSAPP_SUPPORT = process.env.NEXT_PUBLIC_WHATSAPP_SUPPORT || "";
   // An invite product never involves a shared password, so the shared-account
   // warning and its tick-box would just confuse people.
@@ -126,9 +141,9 @@ export function SubCheckoutForm({
 
     const res = await callApi("/api/subscriptions/order", "POST", {
       planId: plan.id,
-      method: "bkash",
-      txnRef: isFree ? undefined : txnRef.trim(),
-      senderNumber: senderNumber.trim() || null,
+      method: isFree ? "bkash" : paymentMethod,
+      txnRef: isFree || paymentMethod === "wallet" ? undefined : txnRef.trim(),
+      senderNumber: paymentMethod === "wallet" ? null : (senderNumber.trim() || null),
       receiptPath,
       inviteEmail: isInvite ? inviteEmail.trim().toLowerCase() : null,
     });
@@ -295,12 +310,39 @@ export function SubCheckoutForm({
         <section className="card p-6 sm:p-8">
           <div className="flex items-center justify-between gap-3">
             <h2 className="text-xl font-black">
-              {isFree ? "🎁 Free Promo Claim" : "Pay with bKash"}
+              {isFree ? "🎁 Free Promo Claim" : "Select Payment Method"}
             </h2>
-            <span className="rounded-lg bg-[#e2136e] px-3 py-1 text-xs font-black text-white">
-              {isFree ? "FREE CLAIM" : "bKash"}
+            <span className="rounded-lg bg-[#ffb703] px-3 py-1 text-xs font-black text-[#0d0f14]">
+              {isFree ? "FREE CLAIM" : paymentMethod.toUpperCase()}
             </span>
           </div>
+
+          {!isFree && (
+            <div className="mt-4 grid grid-cols-2 gap-2 rounded-xl bg-white/[0.04] p-1.5 border border-white/10">
+              <button
+                type="button"
+                onClick={() => setPaymentMethod("bkash")}
+                className={`rounded-lg py-2 text-xs font-bold transition ${
+                  paymentMethod === "bkash"
+                    ? "bg-[#e2136e] text-white shadow-md"
+                    : "text-white/70 hover:bg-white/5 hover:text-white"
+                }`}
+              >
+                bKash Payment
+              </button>
+              <button
+                type="button"
+                onClick={() => setPaymentMethod("wallet")}
+                className={`rounded-lg py-2 text-xs font-bold transition ${
+                  paymentMethod === "wallet"
+                    ? "bg-[#ffb703] text-[#0d0f14] shadow-md"
+                    : "text-white/70 hover:bg-white/5 hover:text-white"
+                }`}
+              >
+                Pay with Wallet Balance
+              </button>
+            </div>
+          )}
 
           <form onSubmit={submit} className="mt-6 space-y-5">
             {isFree ? (
@@ -317,6 +359,20 @@ export function SubCheckoutForm({
                   আমাদের ফেইসবুক পেজ <b className="text-white underline">Follow</b>, পোস্ট{" "}
                   <b className="text-white underline">Share</b> এবং কমেন্ট সম্পন্ন করে নিচে আপনার{" "}
                   {product.name} একাউন্ট ইমেইল দিয়ে ফ্রী ১ মাস ক্লেইম সাবমিট করুন। কোনো টাকা দেওয়া লাগবে না!
+                </p>
+              </div>
+            ) : paymentMethod === "wallet" ? (
+              <div className="rounded-xl border border-[#ffb703]/40 bg-[#ffb703]/10 p-4 text-sm leading-6">
+                <div className="mb-2 flex items-center justify-between gap-2">
+                  <span className="text-xs font-black uppercase tracking-widest text-[#ffb703]">
+                    ⚡ Instant Wallet Checkout
+                  </span>
+                  <span className="rounded-md bg-[#ffb703] px-2 py-0.5 text-[10px] font-black text-[#0d0f14]">
+                    WALLET
+                  </span>
+                </div>
+                <p className="text-sm font-bold leading-relaxed text-white">
+                  Pay instantly using your Subsdealer Wallet balance. Your order will be processed immediately upon submission.
                 </p>
               </div>
             ) : (
@@ -364,7 +420,7 @@ export function SubCheckoutForm({
               </div>
             )}
 
-            {isInvite && (
+            {(isInvite || isGame) && (
               <div className="rounded-xl border border-[#e5243b]/30 bg-[#e5243b]/[.06] p-4">
                 <label>
                   <span className="label">
@@ -404,7 +460,7 @@ export function SubCheckoutForm({
               </div>
             )}
 
-            {!isFree && (
+            {!isFree && paymentMethod === "bkash" && (
               <>
                 <label>
                   <span className="label">Transaction ID</span>
@@ -436,58 +492,60 @@ export function SubCheckoutForm({
               </>
             )}
 
-            <label className="block cursor-pointer">
-              <span className="label mb-2 block">
-                {isFree ? "Facebook Post Share / Follow Screenshot (Optional)" : "Payment screenshot"}
-              </span>
-              <input
-                type="file"
-                accept="image/*"
-                className="hidden"
-                onChange={(e) => {
-                  const f = e.target.files?.[0] ?? null;
-                  if (f && f.size > MAX_RECEIPT_BYTES) {
-                    setErr("That screenshot is over 10MB. Please attach a smaller one.");
-                    return;
-                  }
-                  setErr(null);
-                  setFile(f);
-                }}
-              />
-              {file ? (
-                <div className="flex items-center justify-between gap-3 rounded-xl border border-[#e5243b]/50 bg-[#e5243b]/10 p-4 text-sm">
-                  <div className="flex min-w-0 items-center gap-3">
-                    <span className="text-xl">📄</span>
-                    <div className="min-w-0">
-                      <p className="truncate font-bold text-white">{file.name}</p>
-                      <p className="text-xs text-[#8fa896]">
-                        {(file.size / 1024).toFixed(1)} KB · ready to upload
-                      </p>
+            {paymentMethod === "bkash" && (
+              <label className="block cursor-pointer">
+                <span className="label mb-2 block">
+                  {isFree ? "Facebook Post Share / Follow Screenshot (Optional)" : "Payment screenshot"}
+                </span>
+                <input
+                  type="file"
+                  accept="image/*"
+                  className="hidden"
+                  onChange={(e) => {
+                    const f = e.target.files?.[0] ?? null;
+                    if (f && f.size > MAX_RECEIPT_BYTES) {
+                      setErr("That screenshot is over 10MB. Please attach a smaller one.");
+                      return;
+                    }
+                    setErr(null);
+                    setFile(f);
+                  }}
+                />
+                {file ? (
+                  <div className="flex items-center justify-between gap-3 rounded-xl border border-[#e5243b]/50 bg-[#e5243b]/10 p-4 text-sm">
+                    <div className="flex min-w-0 items-center gap-3">
+                      <span className="text-xl">📄</span>
+                      <div className="min-w-0">
+                        <p className="truncate font-bold text-white">{file.name}</p>
+                        <p className="text-xs text-[#8fa896]">
+                          {(file.size / 1024).toFixed(1)} KB · ready to upload
+                        </p>
+                      </div>
                     </div>
+                    <button
+                      type="button"
+                      className="shrink-0 text-xs font-bold text-red-400 hover:text-red-300"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        setFile(null);
+                      }}
+                    >
+                      ✕ Change
+                    </button>
                   </div>
-                  <button
-                    type="button"
-                    className="shrink-0 text-xs font-bold text-red-400 hover:text-red-300"
-                    onClick={(e) => {
-                      e.preventDefault();
-                      setFile(null);
-                    }}
-                  >
-                    ✕ Change
-                  </button>
-                </div>
-              ) : (
-                <div className="flex flex-col items-center justify-center rounded-xl border-2 border-dashed border-[#e5243b]/30 bg-black/30 p-6 text-center transition-all hover:border-[#e5243b] hover:bg-[#e5243b]/5">
-                  <span className="mb-2 text-3xl text-[#e5243b]">📥</span>
-                  <p className="text-sm font-bold text-white">
-                    {isFree
-                      ? "Click to attach Facebook share screenshot (Optional)"
-                      : "Click to upload your bKash screenshot"}
-                  </p>
-                  <p className="muted mt-1 text-xs">PNG or JPG, up to 10MB</p>
-                </div>
-              )}
-            </label>
+                ) : (
+                  <div className="flex flex-col items-center justify-center rounded-xl border-2 border-dashed border-[#e5243b]/30 bg-black/30 p-6 text-center transition-all hover:border-[#e5243b] hover:bg-[#e5243b]/5">
+                    <span className="mb-2 text-3xl text-[#e5243b]">📥</span>
+                    <p className="text-sm font-bold text-white">
+                      {isFree
+                        ? "Click to attach Facebook share screenshot (Optional)"
+                        : "Click to upload your bKash screenshot"}
+                    </p>
+                    <p className="muted mt-1 text-xs">PNG or JPG, up to 10MB</p>
+                  </div>
+                )}
+              </label>
+            )}
 
             {isShared && (
               <label className="flex cursor-pointer items-start gap-3 rounded-xl border border-white/[.08] bg-white/[.02] p-4">
@@ -526,6 +584,8 @@ export function SubCheckoutForm({
                   ? "Submitting…"
                   : isFree
                   ? "🎁 Claim 1 Month Free →"
+                  : paymentMethod === "wallet"
+                  ? "⚡ Pay with Wallet Balance →"
                   : "Submit payment →"}
               </button>
               <p className="muted mt-3 text-center text-xs">

@@ -25,6 +25,7 @@ type View = "grid" | "list";
 // Pretty names + display order for categories.
 const CAT_LABELS: Record<string, string> = {
   games: "Game Top-Up",
+  gift_cards: "Gift Cards",
   game_keys: "Game Keys",
   ai: "AI Tools",
   design: "Design",
@@ -36,6 +37,7 @@ const CAT_LABELS: Record<string, string> = {
 };
 const CAT_ORDER = [
   "games",
+  "gift_cards",
   "game_keys",
   "ai",
   "design",

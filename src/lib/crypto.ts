@@ -121,6 +121,21 @@ export function maskSecret(plain: string): string {
   return `${plain.slice(0, 2)}${"•".repeat(Math.min(10, plain.length - 4))}${plain.slice(-2)}`;
 }
 
+export function hashLicenseKey(key: string): string {
+  const { createHmac } = require("crypto");
+  const secret = process.env.LICENSE_KEY_HASH_SECRET || process.env.CREDENTIAL_ENC_KEY || "default-subsdealer-license-key-hash-salt";
+  const normalized = key.trim().toUpperCase();
+  return createHmac("sha256", secret).update(normalized).digest("hex");
+}
+
+export function encryptLicenseKey(key: string): string {
+  return encryptSecret(key.trim());
+}
+
+export function decryptLicenseKey(ciphertext: string): string {
+  return decryptSecret(ciphertext);
+}
+
 /**
  * Constant-time compare for the cron secret and similar shared tokens.
  * Plain `===` on a secret leaks length and prefix through timing.
@@ -132,3 +147,4 @@ export function safeEqual(a: string | null | undefined, b: string | null | undef
   if (ba.length !== bb.length) return false;
   return timingSafeEqual(ba, bb);
 }
+

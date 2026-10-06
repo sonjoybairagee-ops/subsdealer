@@ -227,6 +227,7 @@ export default async function SubscriptionProductPage({
             <SubPlanPicker
               plans={plans}
               productName={product.name}
+              productSlug={product.slug}
               features={features}
               signedIn={Boolean(user)}
             />

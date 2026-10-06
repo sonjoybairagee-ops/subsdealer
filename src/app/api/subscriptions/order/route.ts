@@ -18,7 +18,7 @@ export const dynamic = "force-dynamic";
 
 const schema = z.object({
   planId: z.string().uuid(),
-  method: z.literal("bkash"),
+  method: z.enum(["bkash", "wallet"]),
   txnRef: z.string().trim().max(40).optional().nullable(),
   senderNumber: z.string().trim().max(20).optional().nullable(),
   receiptPath: z.string().max(500).optional().nullable(),
@@ -98,8 +98,10 @@ export async function POST(req: Request) {
 
     // Server generates a crypto-secure reference for free claims
     finalTxnRef = `FREE-CLAIM-${randomBytes(3).toString("hex").toUpperCase()}`;
+  } else if (method === "wallet") {
+    finalTxnRef = `WALLET-${randomBytes(3).toString("hex").toUpperCase()}`;
   } else {
-    // 3. Paid Plan Validation
+    // 3. Paid Plan Validation (bKash)
     const clientTxnRef = (parsed.data.txnRef || "").trim().toUpperCase();
 
     // Reject fake FREE- references or invalid bKash transaction IDs on paid plans
@@ -178,6 +180,33 @@ export async function POST(req: Request) {
       );
     }
     return NextResponse.json({ error: error.message }, { status: 500 });
+  }
+
+  // If method === "wallet", execute atomic checkout RPC directly
+  if (method === "wallet") {
+    const { data: sub, error: walletPayError } = await svc.rpc("pay_order_with_wallet", {
+      p_order_id: order.id,
+      p_user_id: user.id,
+    });
+
+    if (walletPayError) {
+      // Rollback order to rejected if wallet payment failed (e.g. insufficient funds)
+      await svc.from("sub_orders").update({ status: "rejected", reject_reason: walletPayError.message }).eq("id", order.id);
+      if (walletPayError.message.includes("INSUFFICIENT_WALLET_BALANCE")) {
+        return NextResponse.json(
+          { error: "Insufficient wallet balance. Please top up your wallet in the dashboard." },
+          { status: 400 }
+        );
+      }
+      return NextResponse.json({ error: walletPayError.message }, { status: 400 });
+    }
+
+    // Trigger automated supplier fulfillment via FazerCards API
+    import("@/lib/auto-fulfill").then(({ processAutoFulfillment }) => {
+      processAutoFulfillment({ orderId: order.id }).catch((err) =>
+        console.error("[AutoFulfill Async Error]:", err)
+      );
+    });
   }
 
   // Send Order Confirmation Email asynchronously
