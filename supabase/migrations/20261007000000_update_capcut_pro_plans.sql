@@ -1,18 +1,12 @@
 -- ============================================================
 -- Subsdealer - CapCut Pro: Update Plans & Pricing
--- 1 Month   -> ৳499 BDT
--- 3 Months  -> ৳1,299 BDT
--- 6 Months  -> ৳2,299 BDT
--- 12 Months -> ৳3,999 BDT
 -- ============================================================
 
 begin;
 
--- Delete old CapCut Pro plans
 delete from public.sub_plans
  where product_id in (select id from public.sub_products where slug = 'capcut-pro');
 
--- Insert updated CapCut Pro plans
 insert into public.sub_plans
   (product_id, name, duration_days, price_bdt, compare_at_bdt, sort_order, is_active)
 select p.id, v.name, v.duration_days, v.price_bdt, v.compare_at_bdt, v.sort_order, true
