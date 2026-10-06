@@ -11,6 +11,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
       heading: null,
       links: [
         ["📊", "Overview", "/admin/overview"],
+        ["📦", "Orders", "/admin/orders"],
         ["◉", "Subscriptions", "/admin/subscriptions"],
       ],
     },
@@ -23,10 +24,11 @@ export default async function AdminLayout({ children }: { children: React.ReactN
       links: [["🛒", "Products & plans", "/admin/sub-products"]],
     },
     {
-      heading: "Supply",
+      heading: "Supply & Logs",
       links: [
         ["🔑", "Credentials", "/admin/credentials"],
         ["👥", "Teams", "/admin/teams"],
+        ["📨", "Live OTP Logs", "/admin/otp-logs"],
       ],
     },
   ];
