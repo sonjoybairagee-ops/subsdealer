@@ -62,10 +62,25 @@ export function AdminAccountAssigner() {
     fetchAccounts();
   }, []);
 
-  // Step 3: Random Email & Password Generator Helper
+  // Step 3: Realistic Human Name & Password Generator Helper
   const handleGenerateRandomEmail = () => {
-    const randomNum = Math.floor(10000 + Math.random() * 90000);
-    const generatedEmail = `user${randomNum}@portal.subsdealer.com`;
+    const firstNames = [
+      "florence", "arthur", "eleanor", "oliver", "sophia", "james", "emma", "liam", "ava", "noah",
+      "isabella", "lucas", "mia", "alexander", "charlotte", "ethan", "amelia", "mason", "harper", "logan",
+      "evelyn", "benjamin", "abigail", "henry", "emily", "sebastian", "elizabeth", "jack", "sofia", "samuel",
+      "avery", "daniel", "ella", "matthew", "scarlett", "jackson", "grace", "david", "chloe", "joseph"
+    ];
+    const lastNames = [
+      "evans", "smith", "johnson", "williams", "brown", "jones", "garcia", "miller", "davis", "rodriguez",
+      "martinez", "hernandez", "lopez", "gonzalez", "wilson", "anderson", "thomas", "taylor", "moore", "lee",
+      "perez", "thompson", "white", "harris", "sanchez", "clark", "ramirez", "lewis", "robinson", "walker"
+    ];
+
+    const randomFirst = firstNames[Math.floor(Math.random() * firstNames.length)];
+    const randomLast = lastNames[Math.floor(Math.random() * lastNames.length)];
+    const randomNum = Math.floor(100 + Math.random() * 900); // 3-digit number for uniqueness
+
+    const generatedEmail = `${randomFirst}.${randomLast}${randomNum}@portal.subsdealer.com`;
 
     const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789@#$";
     let generatedPass = "";
