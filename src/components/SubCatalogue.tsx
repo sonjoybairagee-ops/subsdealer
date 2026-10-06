@@ -85,12 +85,16 @@ export function SubCatalogue({
 
   const visible = useMemo(() => {
     const needle = query.trim().toLowerCase();
-    return products.filter((p) => {
+    const filtered = products.filter((p) => {
       if (category !== "all" && (p.category || "other") !== category) return false;
       if (!needle) return true;
       const hay = `${p.name} ${p.tagline ?? ""} ${p.features.join(" ")}`.toLowerCase();
       return hay.includes(needle);
     });
+    if (category === "games" || category === "all") {
+      return sortGameProducts(filtered);
+    }
+    return filtered;
   }, [products, query, category]);
 
   // Group into category sections only on the unfiltered "All" view. Once the
