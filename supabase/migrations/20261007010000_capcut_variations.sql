@@ -1,5 +1,6 @@
 -- ============================================================
 -- Subsdealer - CapCut Pro: Shared (1 Device) & Private Variations
+-- 6 Months Plan: Exactly 42% Profit Margin
 -- ============================================================
 
 begin;
@@ -60,7 +61,7 @@ from public.sub_products p
 cross join (values
     ('1 Month',    30,   399::numeric,  2439::numeric, 10),
     ('3 Months',   90,  1199::numeric,  7317::numeric, 20),
-    ('6 Months',  180,  1799::numeric, 14634::numeric, 30)
+    ('6 Months',  180,  2049::numeric, 14634::numeric, 30)
   ) as v(name, duration_days, price_bdt, compare_at_bdt, sort_order)
 where p.slug = 'capcut-pro';
 
@@ -74,7 +75,7 @@ from public.sub_products p
 cross join (values
     ('1 Month',    30,   599::numeric,  2439::numeric, 10),
     ('3 Months',   90,  1799::numeric,  7317::numeric, 20),
-    ('6 Months',  180,  2999::numeric, 14634::numeric, 30)
+    ('6 Months',  180,  3129::numeric, 14634::numeric, 30)
   ) as v(name, duration_days, price_bdt, compare_at_bdt, sort_order)
 where p.slug = 'capcut-pro-private';
 
