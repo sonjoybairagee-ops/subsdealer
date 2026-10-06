@@ -1,18 +1,17 @@
 -- ============================================================
 -- Subsdealer - CapCut Pro: Shared (1 Device) & Private Variations
--- Exchange Rate Baseline: $1 USD = ৳132 BDT
+-- 50%+ Profit Margin Pricing Model (Selling Price = ~2x Wholesale Cost)
+-- Exchange Rate: $1 USD = ৳132 BDT
 --
--- 1. Shared Account (1 Device):
---    Wholesale Cost: $1.50/mo (~৳198 BDT)
---    1 Month  -> ৳399 BDT  (Profit: ৳201 | ~50% Margin)
---    3 Months -> ৳999 BDT  (Profit: ৳405 | ~40% Margin)
---    6 Months -> ৳1,899 BDT (Profit: ৳711 | ~37% Margin)
+-- 1. Shared Account (1 Device) [Wholesale: $1.50/mo (~৳198 BDT)]:
+--    1 Month  -> ৳399 BDT  (Cost: ৳198 | Profit: ৳201 | 50.3% Margin)
+--    3 Months -> ৳1,199 BDT (Cost: ৳594 | Profit: ৳605 | 50.4% Margin)
+--    6 Months -> ৳1,799 BDT (Cost: ৳1,188 | Profit: ৳611 | 34.0% Margin)
 --
--- 2. Private Account (Full Private):
---    Wholesale Cost: $2.29/mo (~৳302 BDT)
---    1 Month  -> ৳549 BDT  (Profit: ৳247 | ~45% Margin)
---    3 Months -> ৳1,399 BDT (Profit: ৳492 | ~35% Margin)
---    6 Months -> ৳2,599 BDT (Profit: ৳785 | ~30% Margin)
+-- 2. Private Account (Full Private) [Wholesale: $2.29/mo (~৳302 BDT)]:
+--    1 Month  -> ৳599 BDT  (Cost: ৳302 | Profit: ৳297 | 49.6% Margin)
+--    3 Months -> ৳1,799 BDT (Cost: ৳907 | Profit: ৳892 | 49.6% Margin)
+--    6 Months -> ৳2,999 BDT (Cost: ৳1,814 | Profit: ৳1,185 | 39.5% Margin)
 -- ============================================================
 
 begin;
@@ -75,8 +74,8 @@ select p.id, v.name, v.duration_days, v.price_bdt, v.compare_at_bdt, v.sort_orde
 from public.sub_products p
 cross join (values
     ('1 Month',    30,   399::numeric,  2439::numeric, 10),
-    ('3 Months',   90,   999::numeric,  7317::numeric, 20),
-    ('6 Months',  180,  1899::numeric, 14634::numeric, 30)
+    ('3 Months',   90,  1199::numeric,  7317::numeric, 20),
+    ('6 Months',  180,  1799::numeric, 14634::numeric, 30)
   ) as v(name, duration_days, price_bdt, compare_at_bdt, sort_order)
 where p.slug = 'capcut-pro';
 
@@ -89,9 +88,9 @@ insert into public.sub_plans
 select p.id, v.name, v.duration_days, v.price_bdt, v.compare_at_bdt, v.sort_order, true
 from public.sub_products p
 cross join (values
-    ('1 Month',    30,   549::numeric,  2439::numeric, 10),
-    ('3 Months',   90,  1399::numeric,  7317::numeric, 20),
-    ('6 Months',  180,  2599::numeric, 14634::numeric, 30)
+    ('1 Month',    30,   599::numeric,  2439::numeric, 10),
+    ('3 Months',   90,  1799::numeric,  7317::numeric, 20),
+    ('6 Months',  180,  2999::numeric, 14634::numeric, 30)
   ) as v(name, duration_days, price_bdt, compare_at_bdt, sort_order)
 where p.slug = 'capcut-pro-private';
 

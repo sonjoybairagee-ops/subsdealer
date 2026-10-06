@@ -59,8 +59,8 @@ select p.id, v.name, v.duration_days, v.price_bdt, v.compare_at_bdt, v.sort_orde
 from public.sub_products p
 cross join (values
     ('1 Month',    30,   399::numeric,  2439::numeric, 10),
-    ('3 Months',   90,   999::numeric,  7317::numeric, 20),
-    ('6 Months',  180,  1899::numeric, 14634::numeric, 30)
+    ('3 Months',   90,  1199::numeric,  7317::numeric, 20),
+    ('6 Months',  180,  1799::numeric, 14634::numeric, 30)
   ) as v(name, duration_days, price_bdt, compare_at_bdt, sort_order)
 where p.slug = 'capcut-pro';
 
@@ -72,9 +72,9 @@ insert into public.sub_plans
 select p.id, v.name, v.duration_days, v.price_bdt, v.compare_at_bdt, v.sort_order, true
 from public.sub_products p
 cross join (values
-    ('1 Month',    30,   549::numeric,  2439::numeric, 10),
-    ('3 Months',   90,  1399::numeric,  7317::numeric, 20),
-    ('6 Months',  180,  2599::numeric, 14634::numeric, 30)
+    ('1 Month',    30,   599::numeric,  2439::numeric, 10),
+    ('3 Months',   90,  1799::numeric,  7317::numeric, 20),
+    ('6 Months',  180,  2999::numeric, 14634::numeric, 30)
   ) as v(name, duration_days, price_bdt, compare_at_bdt, sort_order)
 where p.slug = 'capcut-pro-private';
 
