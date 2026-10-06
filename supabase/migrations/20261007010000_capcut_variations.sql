@@ -1,23 +1,9 @@
 -- ============================================================
 -- Subsdealer - CapCut Pro: Shared (1 Device) & Private Variations
--- Exchange Rate Baseline: $1 USD = ৳132 BDT
---
--- 1. Shared Account (1 Device):
---    Wholesale Cost: $1.50/mo (~৳198 BDT)
---    1 Month  -> ৳399 BDT  (Profit: ৳201 | ~50% Margin)
---    3 Months -> ৳999 BDT  (Profit: ৳405 | ~40% Margin)
---    6 Months -> ৳1,899 BDT (Profit: ৳711 | ~37% Margin)
---
--- 2. Private Account (Full Private):
---    Wholesale Cost: $2.29/mo (~৳302 BDT)
---    1 Month  -> ৳549 BDT  (Profit: ৳247 | ~45% Margin)
---    3 Months -> ৳1,399 BDT (Profit: ৳492 | ~35% Margin)
---    6 Months -> ৳2,599 BDT (Profit: ৳785 | ~30% Margin)
 -- ============================================================
 
 begin;
 
--- Ensure CapCut Pro Shared Product
 insert into public.sub_products
   (slug, name, tagline, description, category, access_type, delivery_type,
    login_url, features, terms_note, sort_order, is_active)
@@ -41,7 +27,6 @@ on conflict (slug) do update set
   tagline = EXCLUDED.tagline,
   features = EXCLUDED.features;
 
--- Ensure CapCut Pro Private Product
 insert into public.sub_products
   (slug, name, tagline, description, category, access_type, delivery_type,
    login_url, features, terms_note, sort_order, is_active)
@@ -65,7 +50,6 @@ on conflict (slug) do update set
   tagline = EXCLUDED.tagline,
   features = EXCLUDED.features;
 
--- Update Plans for CapCut Pro Shared
 delete from public.sub_plans
  where product_id in (select id from public.sub_products where slug = 'capcut-pro');
 
@@ -80,7 +64,6 @@ cross join (values
   ) as v(name, duration_days, price_bdt, compare_at_bdt, sort_order)
 where p.slug = 'capcut-pro';
 
--- Update Plans for CapCut Pro Private
 delete from public.sub_plans
  where product_id in (select id from public.sub_products where slug = 'capcut-pro-private');
 

@@ -404,6 +404,7 @@ export function isValidTxnRef(raw: string): boolean {
 export function getProductThumbnail(slug: string, dbThumbnailUrl?: string | null): string {
   const localSlugs = [
     "capcut-pro",
+    "capcut-pro-private",
     "capcut",
     "canva-pro",
     "canva",
