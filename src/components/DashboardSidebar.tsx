@@ -78,6 +78,15 @@ export function DashboardSidebar({ profile, activeTab }: DashboardSidebarProps) 
         </svg>
       ),
     },
+    {
+      id: "referral",
+      label: "Refer & Earn",
+      icon: (
+        <svg className="h-4 w-4 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v13m0-13V6a2 2 0 112 2h-2zm0 0V5a2 2 0 10-2 2h2zm0 13C10.832 21 4 17.5 4 12V7l8-4 8 4v5c0 5.5-6.832 9-8 9z" />
+        </svg>
+      ),
+    },
   ];
 
   return (

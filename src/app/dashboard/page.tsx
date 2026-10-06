@@ -9,6 +9,7 @@ import { DashboardOrders } from "@/components/dashboard/DashboardOrders";
 import { DashboardWallet } from "@/components/dashboard/DashboardWallet";
 import { DashboardAccountDetails } from "@/components/dashboard/DashboardAccountDetails";
 import { DashboardLicenseKeys } from "@/components/dashboard/DashboardLicenseKeys";
+import { ReferralDashboardCard } from "@/components/dashboard/ReferralDashboardCard";
 import { type SubscriptionCardData } from "@/components/SubscriptionCard";
 
 export const dynamic = "force-dynamic";
@@ -117,7 +118,13 @@ export default async function DashboardPage({ searchParams }: DashboardPageProps
         )}
         {activeTab === "account" && <DashboardAccountDetails profile={profile} />}
         {activeTab === "license-key" && <DashboardLicenseKeys keys={licenseKeys} />}
-        {!["overview", "orders", "wallet", "account", "license-key"].includes(activeTab) && (
+        {activeTab === "referral" && (
+          <div className="space-y-6">
+            <h1 className="text-2xl font-black text-white">Referral & Affiliate Program</h1>
+            <ReferralDashboardCard />
+          </div>
+        )}
+        {!["overview", "orders", "wallet", "account", "license-key", "referral"].includes(activeTab) && (
           <DashboardOverview subscriptions={subscriptions} walletBalance={walletBalance} />
         )}
       </main>
