@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { UserPlus, Mail, Key, Trash2, RefreshCw, CheckCircle, AlertCircle, Shield } from "lucide-react";
+import { UserPlus, Mail, Key, Trash2, RefreshCw, CheckCircle, AlertCircle, Shield, KeyRound, Clock, PlusCircle, Ban } from "lucide-react";
 
 interface UserOption {
   id: string;
@@ -12,10 +12,13 @@ interface UserOption {
 interface AssignedAccount {
   id: string;
   user_id: string;
+  target_customer_email?: string;
   email_address: string;
   password?: string;
+  access_key?: string;
   service_name: string;
   status: string;
+  expires_at?: string;
   created_at: string;
   profiles?: {
     email: string;
@@ -30,6 +33,8 @@ export function AdminAccountAssigner() {
   const [serviceName, setServiceName] = useState("Adobe Creative Cloud");
   const [emailAddress, setEmailAddress] = useState("");
   const [password, setPassword] = useState("012345678a@");
+  const [durationDays, setDurationDays] = useState(30);
+  const [lastAccessKey, setLastAccessKey] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [message, setMessage] = useState<{ type: "success" | "error"; text: string } | null>(null);
@@ -57,38 +62,78 @@ export function AdminAccountAssigner() {
     fetchAccounts();
   }, []);
 
+  // Step 3: Random Email & Password Generator Helper
   const handleGenerateRandomEmail = () => {
-    const prefixes = ["sarahanderson", "alexsmith", "michaelwilliams", "emilybrown", "davidjones", "jessicadavis"];
     const randomNum = Math.floor(10000 + Math.random() * 90000);
-    const randPrefix = prefixes[Math.floor(Math.random() * prefixes.length)];
-    setEmailAddress(`${randPrefix}${randomNum}@portal.subsdealer.com`);
+    const generatedEmail = `user${randomNum}@portal.subsdealer.com`;
+
+    const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789@#$";
+    let generatedPass = "";
+    for (let i = 0; i < 10; i++) {
+      generatedPass += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+    generatedPass += "@1";
+
+    setEmailAddress(generatedEmail);
+    setPassword(generatedPass);
   };
 
   const handleAssignSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!userEmail || !emailAddress || !password) {
-      setMessage({ type: "error", text: "Target User Email, Subscription Email, and Password are required." });
+      setMessage({ type: "error", text: "Target Customer Email, Subscription Email, and Password are required." });
       return;
     }
 
     try {
       setSubmitting(true);
       setMessage(null);
+      setLastAccessKey(null);
+
       const res = await fetch("/api/admin/assign-account", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
+          target_customer_email: userEmail,
           user_email: userEmail,
           email_address: emailAddress,
           password: password,
           service_name: serviceName,
-          status: "ACTIVE",
+          status: "active",
+          duration_days: durationDays,
         }),
       });
 
       const json = await res.json();
       if (json.success) {
-        setMessage({ type: "success", text: "Subscription account successfully assigned to customer!" });
+        setLastAccessKey(json.access_key || null);
+
+        // Automatically Dispatch Email & WhatsApp Notification
+        let notifyMessage = "";
+        try {
+          const notifyRes = await fetch("/api/admin/send-credential", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              target_customer_email: userEmail,
+              service_name: serviceName,
+              email_address: emailAddress,
+              password: password,
+              access_key: json.access_key,
+            }),
+          });
+          const notifyJson = await notifyRes.json();
+          if (notifyJson.success) {
+            notifyMessage = " Email & WhatsApp notification dispatched to customer!";
+          }
+        } catch (notifyErr) {
+          console.warn("Credential notification dispatch error:", notifyErr);
+        }
+
+        setMessage({
+          type: "success",
+          text: `Account successfully assigned! Access Key: ${json.access_key}.${notifyMessage}`,
+        });
         setEmailAddress("");
         await fetchAccounts();
       } else {
@@ -98,6 +143,24 @@ export function AdminAccountAssigner() {
       setMessage({ type: "error", text: err.message || "An unexpected error occurred." });
     } finally {
       setSubmitting(false);
+    }
+  };
+
+  const handleAccountAction = async (id: string, email: string, action: "extend" | "expire") => {
+    try {
+      const res = await fetch("/api/admin/assign-account", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id, email_address: email, action, extend_days: 30 }),
+      });
+      const json = await res.json();
+      if (json.success) {
+        await fetchAccounts();
+      } else {
+        alert(json.error || "Failed to update account status.");
+      }
+    } catch (err: any) {
+      console.error("Account action error:", err);
     }
   };
 
@@ -116,6 +179,23 @@ export function AdminAccountAssigner() {
     }
   };
 
+  // Helper to calculate days remaining
+  const getExpiryStatus = (acc: AssignedAccount) => {
+    const now = new Date();
+    const expiryDate = acc.expires_at
+      ? new Date(acc.expires_at)
+      : new Date(new Date(acc.created_at || now).getTime() + 30 * 24 * 60 * 60 * 1000);
+
+    const diffDays = Math.ceil((expiryDate.getTime() - now.getTime()) / (1000 * 3600 * 24));
+    const isExpired = diffDays <= 0 || (acc.status || "").toLowerCase() === "expired";
+
+    return {
+      expiryDate,
+      diffDays,
+      isExpired,
+    };
+  };
+
   return (
     <div className="space-y-8 text-white font-sans">
       {/* 1. Assignment Form Panel */}
@@ -132,16 +212,16 @@ export function AdminAccountAssigner() {
               <UserPlus className="w-5 h-5 text-red-500" /> Assign Shared Account to Customer
             </h2>
             <p className="text-xs text-neutral-400">
-              Select a customer email, enter the shared login details, and click assign.
+              Select target customer email, click Generate Random Email & Password, and set plan validity.
             </p>
           </div>
 
           <button
             type="button"
             onClick={handleGenerateRandomEmail}
-            className="btn-secondary text-xs flex items-center gap-1.5"
+            className="bg-red-600 hover:bg-red-500 text-white font-bold text-xs px-4 py-2.5 rounded-xl transition flex items-center gap-1.5 shadow-lg shadow-red-600/20 cursor-pointer"
           >
-            🎲 Generate Random Email
+            🎲 Generate Random Email & Pass
           </button>
         </div>
 
@@ -154,11 +234,18 @@ export function AdminAccountAssigner() {
             }`}
           >
             {message.type === "success" ? <CheckCircle className="w-4 h-4" /> : <AlertCircle className="w-4 h-4" />}
-            {message.text}
+            <div>
+              <p>{message.text}</p>
+              {lastAccessKey && (
+                <p className="font-mono text-emerald-300 font-bold mt-1">
+                  Access Key: <span className="bg-black/40 px-2 py-0.5 rounded border border-emerald-500/30">{lastAccessKey}</span>
+                </p>
+              )}
+            </div>
           </div>
         )}
 
-        <form onSubmit={handleAssignSubmit} className="grid gap-4 sm:grid-cols-2">
+        <form onSubmit={handleAssignSubmit} className="grid gap-4 sm:grid-cols-3">
           {/* Target Customer Email */}
           <div>
             <label className="block text-[11px] font-bold uppercase tracking-wider text-neutral-300 mb-1">
@@ -197,8 +284,25 @@ export function AdminAccountAssigner() {
             />
           </div>
 
-          {/* Subscription Email Address */}
+          {/* Validity Duration */}
           <div>
+            <label className="block text-[11px] font-bold uppercase tracking-wider text-neutral-300 mb-1">
+              Plan Validity (Days)
+            </label>
+            <select
+              value={durationDays}
+              onChange={(e) => setDurationDays(Number(e.target.value))}
+              className="w-full rounded-xl bg-black/60 border border-white/10 px-3.5 py-2.5 text-xs text-white focus:outline-none focus:border-red-500"
+            >
+              <option value={30}>30 Days (Standard Monthly)</option>
+              <option value={60}>60 Days (2 Months)</option>
+              <option value={90}>90 Days (3 Months)</option>
+              <option value={365}>365 Days (1 Year)</option>
+            </select>
+          </div>
+
+          {/* Subscription Email Address */}
+          <div className="sm:col-span-2">
             <label className="block text-[11px] font-bold uppercase tracking-wider text-neutral-300 mb-1">
               Subscription Email Address
             </label>
@@ -208,7 +312,7 @@ export function AdminAccountAssigner() {
                 type="email"
                 value={emailAddress}
                 onChange={(e) => setEmailAddress(e.target.value)}
-                placeholder="sarahanderson40027@portal.subsdealer.com"
+                placeholder="user59832@portal.subsdealer.com"
                 className="w-full rounded-xl bg-black/60 border border-white/10 pl-9 pr-3.5 py-2.5 text-xs text-white focus:outline-none focus:border-red-500 font-mono"
               />
             </div>
@@ -225,13 +329,13 @@ export function AdminAccountAssigner() {
                 type="text"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                placeholder="012345678a@"
+                placeholder="Password"
                 className="w-full rounded-xl bg-black/60 border border-white/10 pl-9 pr-3.5 py-2.5 text-xs text-amber-400 focus:outline-none focus:border-red-500 font-mono"
               />
             </div>
           </div>
 
-          <div className="sm:col-span-2 pt-2">
+          <div className="sm:col-span-3 pt-2">
             <button
               type="submit"
               disabled={submitting}
@@ -264,50 +368,86 @@ export function AdminAccountAssigner() {
             <thead>
               <tr className="border-b border-white/10 text-neutral-400 uppercase text-[11px]">
                 <th className="py-3 px-3">Target Customer</th>
+                <th className="py-3 px-3">Access Key</th>
                 <th className="py-3 px-3">Service</th>
                 <th className="py-3 px-3">Subscription Email</th>
-                <th className="py-3 px-3">Password</th>
+                <th className="py-3 px-3">Validity / Expiry</th>
                 <th className="py-3 px-3">Status</th>
-                <th className="py-3 px-3 text-right">Action</th>
+                <th className="py-3 px-3 text-right">Actions</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-white/5">
-              {assignedAccounts.map((item) => (
-                <tr key={item.id || item.email_address} className="hover:bg-white/[0.02]">
-                  <td className="py-3.5 px-3">
-                    <p className="font-semibold text-white">
-                      {item.profiles?.full_name || "Customer"}
-                    </p>
-                    <p className="text-[10px] text-neutral-400">{item.profiles?.email || "No email"}</p>
-                  </td>
-                  <td className="py-3.5 px-3 text-neutral-300 font-medium">
-                    {item.service_name}
-                  </td>
-                  <td className="py-3.5 px-3 font-mono text-red-400">
-                    {item.email_address}
-                  </td>
-                  <td className="py-3.5 px-3 font-mono text-amber-400">
-                    {item.password || "012345678a@"}
-                  </td>
-                  <td className="py-3.5 px-3">
-                    <span className="inline-block rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 px-2 py-0.5 text-[10px] font-semibold uppercase">
-                      {item.status || "ACTIVE"}
-                    </span>
-                  </td>
-                  <td className="py-3.5 px-3 text-right">
-                    <button
-                      onClick={() => handleDeleteAccount(item.id, item.email_address)}
-                      className="text-red-400 hover:text-red-300 p-1.5 rounded hover:bg-white/5 transition inline-flex items-center gap-1 text-xs"
-                      title="Delete Account"
-                    >
-                      <Trash2 className="w-3.5 h-3.5" /> Remove
-                    </button>
-                  </td>
-                </tr>
-              ))}
+              {assignedAccounts.map((item) => {
+                const { diffDays, isExpired, expiryDate } = getExpiryStatus(item);
+                return (
+                  <tr key={item.id || item.email_address} className="hover:bg-white/[0.02]">
+                    <td className="py-3.5 px-3">
+                      <p className="font-semibold text-white">
+                        {item.profiles?.full_name || item.target_customer_email || "Customer"}
+                      </p>
+                      <p className="text-[10px] text-neutral-400">{item.profiles?.email || item.target_customer_email || "No email"}</p>
+                    </td>
+                    <td className="py-3.5 px-3 font-mono font-bold text-emerald-400 flex items-center gap-1">
+                      <KeyRound className="w-3.5 h-3.5 text-emerald-500" />
+                      <span>{item.access_key || "SUBS-KEY"}</span>
+                    </td>
+                    <td className="py-3.5 px-3 text-neutral-300 font-medium">
+                      {item.service_name}
+                    </td>
+                    <td className="py-3.5 px-3 font-mono text-red-400">
+                      {item.email_address}
+                    </td>
+                    <td className="py-3.5 px-3">
+                      <div className="flex items-center gap-1.5">
+                        <Clock className={`w-3.5 h-3.5 ${isExpired ? "text-red-400" : "text-amber-400"}`} />
+                        <span className={`font-mono text-[11px] ${isExpired ? "text-red-400 font-bold" : "text-neutral-300"}`}>
+                          {isExpired ? "Expired" : `${diffDays} days left`}
+                        </span>
+                      </div>
+                      <p className="text-[10px] text-neutral-500 mt-0.5">{expiryDate.toLocaleDateString()}</p>
+                    </td>
+                    <td className="py-3.5 px-3">
+                      <span
+                        className={`inline-block rounded px-2 py-0.5 text-[10px] font-semibold uppercase ${
+                          isExpired
+                            ? "bg-red-500/10 text-red-400 border border-red-500/20"
+                            : "bg-emerald-500/10 text-emerald-400 border border-emerald-500/20"
+                        }`}
+                      >
+                        {isExpired ? "EXPIRED" : item.status || "ACTIVE"}
+                      </span>
+                    </td>
+                    <td className="py-3.5 px-3 text-right">
+                      <div className="flex items-center justify-end gap-1">
+                        <button
+                          onClick={() => handleAccountAction(item.id, item.email_address, "extend")}
+                          className="text-emerald-400 hover:text-emerald-300 p-1.5 rounded hover:bg-emerald-500/10 transition inline-flex items-center gap-1 text-[11px] font-semibold cursor-pointer"
+                          title="Extend Validity +30 Days"
+                        >
+                          <PlusCircle className="w-3.5 h-3.5" /> +30d
+                        </button>
+                        <button
+                          onClick={() => handleAccountAction(item.id, item.email_address, "expire")}
+                          className="text-amber-400 hover:text-amber-300 p-1.5 rounded hover:bg-amber-500/10 transition inline-flex items-center gap-1 text-[11px] font-semibold cursor-pointer"
+                          title="Mark Expired / Block Access"
+                        >
+                          <Ban className="w-3.5 h-3.5" /> Expire
+                        </button>
+                        <button
+                          onClick={() => handleDeleteAccount(item.id, item.email_address)}
+                          className="text-red-400 hover:text-red-300 p-1.5 rounded hover:bg-red-500/10 transition inline-flex items-center gap-1 text-[11px] font-semibold cursor-pointer"
+                          title="Delete Account"
+                        >
+                          <Trash2 className="w-3.5 h-3.5" />
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                );
+              })}
               {assignedAccounts.length === 0 && (
                 <tr>
-                  <td colSpan={6} className="py-8 text-center text-neutral-500">
+                  <td colSpan={7} className="py-8 text-center text-neutral-500">
                     No assigned accounts recorded yet.
                   </td>
                 </tr>

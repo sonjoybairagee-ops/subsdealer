@@ -17,7 +17,10 @@ export default async function AdminLayout({ children }: { children: React.ReactN
     },
     {
       heading: "Money",
-      links: [["৳", "Payments", "/admin/subscriptions/payments"]],
+      links: [
+        ["📈", "Financial Analytics", "/admin/analytics"],
+        ["৳", "Payments", "/admin/subscriptions/payments"],
+      ],
     },
     {
       heading: "Catalogue",

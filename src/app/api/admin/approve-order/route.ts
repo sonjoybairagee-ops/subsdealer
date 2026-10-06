@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { requireAdmin } from "@/lib/auth";
+import { sendWhatsAppNotification } from "@/lib/whatsapp";
 
 export const dynamic = "force-dynamic";
 
@@ -21,10 +22,10 @@ export async function POST(request: Request) {
 
     const supabase = createAdminClient();
 
-    // 2. Fetch the order details
+    // 2. Fetch the order details (sub_orders is the primary table)
     let order: any = null;
-    const { data: fetchOrder, error: orderError } = await supabase
-      .from("orders")
+    const { data: fetchOrder } = await supabase
+      .from("sub_orders")
       .select("*")
       .eq("id", orderId)
       .maybeSingle();
@@ -32,14 +33,21 @@ export async function POST(request: Request) {
     if (fetchOrder) {
       order = fetchOrder;
     } else {
-      // Fallback check in sub_user_products if orders table differs
-      const { data: sub } = await supabase
-        .from("sub_user_products")
+      // Fallback check in orders or sub_user_products
+      const { data: fallbackOrder } = await supabase
+        .from("orders")
         .select("*")
         .eq("id", orderId)
         .maybeSingle();
-      if (sub) {
-        order = sub;
+      if (fallbackOrder) {
+        order = fallbackOrder;
+      } else {
+        const { data: sub } = await supabase
+          .from("sub_user_products")
+          .select("*")
+          .eq("id", orderId)
+          .maybeSingle();
+        if (sub) order = sub;
       }
     }
 
@@ -49,16 +57,23 @@ export async function POST(request: Request) {
 
     // 3. Update order status to approved/completed
     const { error: updateError } = await supabase
-      .from("orders")
+      .from("sub_orders")
       .update({ status: "approved" })
       .eq("id", orderId);
 
     if (updateError) {
-      // Fallback update in sub_user_products if applicable
+      await supabase.from("orders").update({ status: "approved" }).eq("id", orderId);
       await supabase.from("sub_user_products").update({ status: "active" }).eq("id", orderId);
     }
 
-    // 4. Automatically assign a shared subscription account if service matches
+    // 4. Trigger atomic referral commission calculation (idempotent, 5% cashback to referrer)
+    try {
+      await supabase.rpc("credit_referral_commission", { p_order_id: orderId, p_rate: 0.05 });
+    } catch (refError) {
+      console.error("Error crediting referral commission:", refError);
+    }
+
+    // 5. Automatically assign a shared subscription account if service matches
     const serviceName = order.service_name || order.product_name || "Adobe Creative Cloud";
 
     const randomSuffix = Math.floor(10000 + Math.random() * 90000);
@@ -99,6 +114,23 @@ export async function POST(request: Request) {
       );
     } catch (assignError) {
       console.error("Error assigning account credentials to shared_subscription_accounts:", assignError);
+    }
+
+    // 6. Trigger non-blocking WhatsApp notification
+    try {
+      const userPhone = order.phone || order.phone_number || "";
+      if (userPhone) {
+        sendWhatsAppNotification({
+          userId: order.user_id,
+          phone: userPhone,
+          eventType: "order_approved",
+          referenceId: orderId,
+          messageText: `হ্যালো! আপনার ${serviceName} অর্ডারটি অ্যাপ্রুভ হয়েছে। Unique Access Key: ${accessKey}। পোর্টাল দেখতে লগইন করুন: https://subsdealer.com/dashboard`,
+          payload: { accessKey, serviceName },
+        });
+      }
+    } catch (waErr) {
+      console.warn("Non-blocking WhatsApp trigger warning:", waErr);
     }
 
     return NextResponse.json({

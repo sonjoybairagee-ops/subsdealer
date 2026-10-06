@@ -1,6 +1,8 @@
 import Link from "next/link";
 import { SubscriptionCard, type SubscriptionCardData } from "@/components/SubscriptionCard";
 import UserEmailPortal from "@/components/UserEmailPortal";
+import { RenewalBanner } from "@/components/dashboard/RenewalBanner";
+import { ReferralDashboardCard } from "@/components/dashboard/ReferralDashboardCard";
 import { formatBdt } from "@/lib/subscriptions";
 
 interface DashboardOverviewProps {
@@ -37,6 +39,12 @@ export function DashboardOverview({ subscriptions, walletBalance }: DashboardOve
           </Link>
         </div>
       </div>
+
+      {/* Expiring Soon 1-Click Renewal Banner */}
+      <RenewalBanner subscriptions={subscriptions} walletBalance={walletBalance} />
+
+      {/* Referral & 5% Cashback Card */}
+      <ReferralDashboardCard />
 
       {/* Shared Subscription Email & OTP Portal (Locked until Adobe subscription is purchased) */}
       {hasActiveAccess ? (

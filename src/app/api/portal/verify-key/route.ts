@@ -9,7 +9,7 @@ export async function POST(req: Request) {
     const rawKey = body.accessKey || body.access_key;
 
     if (!rawKey || typeof rawKey !== "string" || !rawKey.trim()) {
-      return NextResponse.json({ error: "Access Key is required" }, { status: 400 });
+      return NextResponse.json({ error: "Access Key is required." }, { status: 400 });
     }
 
     const cleanKey = rawKey.trim().toUpperCase();
@@ -19,7 +19,7 @@ export async function POST(req: Request) {
     let account: any = null;
     const { data: sharedAcc } = await supabase
       .from("shared_subscription_accounts")
-      .select("id, user_id, service_name, email_address, password, access_key, status, created_at")
+      .select("id, user_id, service_name, email_address, password, access_key, status, expires_at, created_at")
       .ilike("access_key", cleanKey)
       .maybeSingle();
 
@@ -29,7 +29,7 @@ export async function POST(req: Request) {
       // 2. Search user_generated_emails by access_key
       const { data: genEmail } = await supabase
         .from("user_generated_emails")
-        .select("id, user_id, service_name, email_address, password, access_key, status, created_at")
+        .select("id, user_id, service_name, email_address, password, access_key, status, expires_at, created_at")
         .ilike("access_key", cleanKey)
         .maybeSingle();
 
@@ -38,11 +38,11 @@ export async function POST(req: Request) {
       }
     }
 
-    // Fallback: If cleanKey matches format SUBS-XXXX-SERVICE, try matching prefix or email
+    // Fallback: Check latest matching record if cleanKey matches prefix
     if (!account) {
       const { data: fallbackGen } = await supabase
         .from("user_generated_emails")
-        .select("id, user_id, service_name, email_address, password, access_key, status, created_at")
+        .select("id, user_id, service_name, email_address, password, access_key, status, expires_at, created_at")
         .order("created_at", { ascending: false })
         .limit(1)
         .maybeSingle();
@@ -54,15 +54,35 @@ export async function POST(req: Request) {
 
     if (!account) {
       return NextResponse.json(
-        { error: "Invalid Access Key. Please check your WhatsApp/Email or contact support." },
+        { error: "Invalid Access Key. Please check your credentials or contact support." },
         { status: 404 }
       );
     }
 
-    // Ensure access_key field is set in account object
+    // 2. Verify subscription expiry date & status
+    const now = new Date();
+    // Default expiry date is 30 days after created_at if expires_at is not set
+    const expiryDate = account.expires_at
+      ? new Date(account.expires_at)
+      : new Date(new Date(account.created_at || now).getTime() + 30 * 24 * 60 * 60 * 1000);
+
+    const isExpired = now > expiryDate;
+    const statusUpper = (account.status || "ACTIVE").toUpperCase();
+
+    if (isExpired || statusUpper === "EXPIRED" || statusUpper === "REVOKED") {
+      return NextResponse.json(
+        {
+          error: "Your subscription period has expired. Please renew your plan to regain access.",
+          isExpired: true,
+          expiresAt: expiryDate.toISOString(),
+        },
+        { status: 403 }
+      );
+    }
+
     account.access_key = account.access_key || cleanKey;
 
-    // 3. Fetch latest verification codes for this account's email_address
+    // 3. Fetch latest live OTP / verification codes for this account's email_address
     const { data: codes } = await supabase
       .from("email_verifications")
       .select("id, email_address, subject, code, received_at")
@@ -79,6 +99,7 @@ export async function POST(req: Request) {
         password: account.password || "012345678a@",
         access_key: account.access_key,
         status: account.status || "ACTIVE",
+        expires_at: expiryDate.toISOString(),
       },
       codes: codes || [],
     });
