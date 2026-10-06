@@ -455,3 +455,27 @@ export function getProductThumbnail(slug: string, dbThumbnailUrl?: string | null
   return dbThumbnailUrl || `/products/${slug}.png`;
 }
 
+/**
+ * Custom sort for Game Top-Up category cards according to requested serial order:
+ * 1. PUBG Mobile UC
+ * 2. Free Fire
+ * 3. Mobile Legends: Bang Bang
+ * 4. VALORANT
+ * 5. All other games follow
+ */
+export function sortGameProducts<T extends { slug: string; name?: string }>(items: T[]): T[] {
+  return [...items].sort((a, b) => {
+    const getRank = (item: T) => {
+      const s = (item.slug || "").toLowerCase();
+      const n = (item.name || "").toLowerCase();
+      if (s.includes("pubg") || n.includes("pubg")) return 1;
+      if (s.includes("free-fire") || s.includes("freefire") || n.includes("free fire")) return 2;
+      if (s.includes("mobile-legends") || s.includes("mlbb") || n.includes("mobile legends")) return 3;
+      if (s.includes("valorant") || n.includes("valorant")) return 4;
+      return 99;
+    };
+    return getRank(a) - getRank(b);
+  });
+}
+
+

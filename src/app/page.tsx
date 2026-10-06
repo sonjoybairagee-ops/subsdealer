@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
-import { formatBdt, discountPercent, describeDuration, getProductThumbnail } from "@/lib/subscriptions";
+import { formatBdt, discountPercent, describeDuration, getProductThumbnail, sortGameProducts } from "@/lib/subscriptions";
 import { ProductShowcase, type ShowcaseItem } from "@/components/ProductShowcase";
 import { Reviews } from "@/components/Reviews";
 import { HeroSlider } from "@/components/HeroSlider";
@@ -172,8 +172,11 @@ function inferCategory(p: any): string {
         ) : (
           <div className="space-y-12">
             {HOME_SECTIONS.map(({ key, label }) => {
-              const items = showcase.filter((p) => (p.category ?? "other") === key);
+              let items = showcase.filter((p) => (p.category ?? "other") === key);
               if (items.length === 0) return null;
+              if (key === "games") {
+                items = sortGameProducts(items);
+              }
               return (
                 <div key={key}>
                   <div className="flex items-center justify-between gap-4 border-b border-white/10 pb-4">

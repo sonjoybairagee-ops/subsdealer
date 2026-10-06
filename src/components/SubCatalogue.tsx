@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from "react";
 import Link from "next/link";
-import { describeDuration, discountPercent, formatBdt } from "@/lib/subscriptions";
+import { describeDuration, discountPercent, formatBdt, sortGameProducts } from "@/lib/subscriptions";
 import { ProductShowcase, type ShowcaseItem } from "./ProductShowcase";
 
 export interface CatalogueProduct {
@@ -101,7 +101,14 @@ export function SubCatalogue({
       const key = p.category || "other";
       (map.get(key) ?? map.set(key, []).get(key)!).push(p);
     }
-    return Array.from(map.entries()).sort((a, b) => catRank(a[0]) - catRank(b[0]));
+    return Array.from(map.entries())
+      .map(([key, items]) => {
+        if (key === "games") {
+          return [key, sortGameProducts(items)] as [string, CatalogueProduct[]];
+        }
+        return [key, items] as [string, CatalogueProduct[]];
+      })
+      .sort((a, b) => catRank(a[0]) - catRank(b[0]));
   }, [visible]);
 
   const showGroups = category === "all" && query.trim() === "";
