@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { requireAdmin } from "@/lib/auth";
-import { encryptCredential } from "@/lib/crypto";
+import { encryptSecret } from "@/lib/crypto";
 
 export const dynamic = "force-dynamic";
 
@@ -49,7 +49,7 @@ export async function POST(req: Request) {
     }
 
     // Encrypt the password
-    const passwordEnc = encryptCredential(adobeAccount.password);
+    const passwordEnc = encryptSecret(adobeAccount.password);
 
     // Create credential in sub_credentials table
     const { data: credential, error: credError } = await supabase
