@@ -31,6 +31,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
       links: [
         ["🔑", "Credentials", "/admin/credentials"],
         ["👥", "Teams", "/admin/teams"],
+        ["🎨", "Adobe Accounts", "/admin/adobe-accounts"],
         ["📨", "Live OTP Logs", "/admin/otp-logs"],
       ],
     },

@@ -21,9 +21,9 @@ export async function POST(request: Request) {
     const cleanEmail = email_address.trim().toLowerCase();
     const cleanSubject = subject || "Verification Code";
     const cleanOtp = otp_code || "N/A";
-    const serviceName = cleanSubject.toLowerCase().includes("adobe")
+    const serviceName = body.service_name || (cleanSubject.toLowerCase().includes("adobe")
       ? "Adobe Creative Cloud"
-      : "Subscription Service";
+      : "Subscription Service");
 
     const supabase = createAdminClient();
 
@@ -42,7 +42,24 @@ export async function POST(request: Request) {
       console.error("Database insert error in otp_history:", insertError.message);
     }
 
-    // 3. Fallback sync to email_verifications table for legacy endpoint compatibility
+    // 3. Update adobe_accounts table if email matches an Adobe account
+    if (serviceName === "Adobe Creative Cloud" && cleanOtp !== "N/A") {
+      try {
+        await supabase
+          .from("adobe_accounts")
+          .update({ 
+            last_otp: cleanOtp, 
+            last_otp_time: new Date().toISOString() 
+          })
+          .eq('email', cleanEmail);
+        
+        console.log(`Updated last_otp for Adobe account: ${cleanEmail}`);
+      } catch (e) {
+        console.warn("Failed to update adobe_accounts last_otp:", e);
+      }
+    }
+
+    // 4. Fallback sync to email_verifications table for legacy endpoint compatibility
     try {
       await supabase.from("email_verifications").insert({
         email_address: cleanEmail,

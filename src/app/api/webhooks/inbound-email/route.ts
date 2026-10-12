@@ -55,7 +55,7 @@ export async function POST(req: Request) {
     }
 
     // Support multiple webhook payload formats (Cloudflare Email Worker, SendGrid, Mailgun, Postmark)
-    const recipientRaw = payload.to || payload.recipient || payload.email || payload.to_address || "";
+    const recipientRaw = payload.to || payload.recipient || payload.email || payload.email_address || payload.to_address || "";
     const sender = payload.from || payload.sender || payload.from_address || "Unknown Sender";
     const subject = payload.subject || "No Subject";
     const bodyText = payload.body || payload.text || payload.html || payload.raw_body || "";
@@ -73,33 +73,41 @@ export async function POST(req: Request) {
 
     const supabase = createAdminClient();
 
-    // Find linked user_generated_emails row
-    const { data: genEmail } = await supabase
-      .from("user_generated_emails")
-      .select("id, user_id, email_address")
-      .eq("email_address", recipientEmail)
-      .single();
+    // Find linked user_generated_emails row safely
+    let genEmail: any = null;
+    try {
+      const { data } = await supabase
+        .from("user_generated_emails")
+        .select("id, user_id, email_address")
+        .eq("email_address", recipientEmail)
+        .single();
+      genEmail = data;
+    } catch (e) {}
 
-    // Insert received code into received_email_codes, otp_history, and email_verifications tables
-    const { data: inserted, error: insertErr } = await supabase
-      .from("received_email_codes")
-      .insert({
-        generated_email_id: genEmail ? genEmail.id : null,
-        email_address: recipientEmail,
-        sender,
-        subject,
-        code,
-        otp_type: type,
-        raw_body: bodyText.slice(0, 2000), // Limit length
-      })
-      .select()
-      .single();
+    let inserted: any = null;
+    // 1. Insert into received_email_codes table
+    try {
+      const { data } = await supabase
+        .from("received_email_codes")
+        .insert({
+          generated_email_id: genEmail ? genEmail.id : null,
+          email_address: recipientEmail,
+          sender,
+          subject,
+          code,
+          otp_type: type,
+          raw_body: bodyText.slice(0, 2000),
+        })
+        .select()
+        .single();
+      inserted = data;
+    } catch (e) {}
 
-    // Also insert into otp_history table for admin logs
+    // 2. Insert into otp_history table for admin logs
     try {
       await supabase.from("otp_history").insert({
         email_address: recipientEmail,
-        service_name: "Adobe Creative Cloud",
+        service_name: "Subscription Service",
         sender,
         subject,
         otp_code: code,
@@ -107,7 +115,7 @@ export async function POST(req: Request) {
       });
     } catch (e) {}
 
-    // Also insert into email_verifications table for user portal
+    // 3. Insert into email_verifications table for user portal
     try {
       await supabase.from("email_verifications").insert({
         email_address: recipientEmail,
@@ -115,10 +123,6 @@ export async function POST(req: Request) {
         code,
       });
     } catch (e) {}
-
-    if (insertErr) {
-      console.error("Error storing received email code:", insertErr);
-    }
 
     return NextResponse.json({
       success: true,
