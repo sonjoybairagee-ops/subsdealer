@@ -121,6 +121,28 @@ export default function AdobeAccountsPage() {
     }
   };
 
+  const convertToCredential = async (id: string) => {
+    if (!confirm("Convert this Adobe account to a credential that can be assigned to subscriptions?")) return;
+    
+    try {
+      const res = await fetch("/api/admin/adobe-accounts/convert-to-credential", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ adobe_account_id: id }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        alert("Converted successfully! You can now assign this credential to subscriptions.");
+        await fetchAccounts();
+      } else {
+        alert("Failed to convert: " + data.error);
+      }
+    } catch (err) {
+      console.error("Failed to convert account:", err);
+      alert("Failed to convert account");
+    }
+  };
+
   const togglePasswordVisibility = (id: string) => {
     setShowPasswords((prev) => ({
       ...prev,
@@ -295,6 +317,15 @@ export default function AdobeAccountsPage() {
                         >
                           {account.is_used ? "Make Available" : "Mark Used"}
                         </button>
+                        {!account.is_used && (
+                          <button
+                            onClick={() => convertToCredential(account.id)}
+                            className="rounded px-2 py-1 text-xs font-semibold bg-green-500/20 text-green-400 hover:bg-green-500/30"
+                            title="Convert to credential for subscription assignment"
+                          >
+                            Convert
+                          </button>
+                        )}
                         <button
                           onClick={() => deleteAccount(account.id)}
                           className="rounded px-2 py-1 text-xs font-semibold bg-red-500/20 text-red-400 hover:bg-red-500/30"
