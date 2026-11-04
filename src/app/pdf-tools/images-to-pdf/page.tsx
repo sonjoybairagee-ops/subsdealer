@@ -12,8 +12,8 @@ export default function ImagesToPdfPage() {
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "WebApplication",
-    name: "iformat.io Images to PDF",
-    url: "https://iformat.io/pdf-tools/images-to-pdf",
+    name: "subsdealer.com Images to PDF",
+    url: "https://www.subsdealer.com/pdf-tools/images-to-pdf",
     applicationCategory: "MultimediaApplication",
     offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
     description: "Convert photos and images into a single PDF document online for free.",

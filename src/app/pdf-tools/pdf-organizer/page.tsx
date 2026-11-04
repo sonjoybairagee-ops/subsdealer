@@ -12,8 +12,8 @@ export default function PdfOrganizerPage() {
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "WebApplication",
-    name: "iformat.io PDF Page Organizer",
-    url: "https://iformat.io/pdf-tools/pdf-organizer",
+    name: "subsdealer.com PDF Page Organizer",
+    url: "https://www.subsdealer.com/pdf-tools/pdf-organizer",
     applicationCategory: "MultimediaApplication",
     offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
     description: "Reorder, rotate, and delete pages from PDF files online for free.",

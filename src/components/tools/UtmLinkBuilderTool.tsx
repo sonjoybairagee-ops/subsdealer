@@ -40,7 +40,7 @@ const PRESET_CAMPAIGNS = [
 ];
 
 export function UtmLinkBuilderTool() {
-  const [websiteUrl, setWebsiteUrl] = useState("https://iformat.io/tools");
+  const [websiteUrl, setWebsiteUrl] = useState("https://www.subsdealer.com/tools");
   const [source, setSource] = useState("google");
   const [medium, setMedium] = useState("cpc");
   const [campaign, setCampaign] = useState("spring_launch_2026");

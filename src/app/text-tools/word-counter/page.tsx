@@ -12,8 +12,8 @@ export default function WordCounterPage() {
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "WebApplication",
-    name: "iformat.io Word Counter",
-    url: "https://iformat.io/text-tools/word-counter",
+    name: "subsdealer.com Word Counter",
+    url: "https://www.subsdealer.com/text-tools/word-counter",
     applicationCategory: "UtilityApplication",
     offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
     description: "Count words, characters, and reading time online for free in real-time.",

@@ -12,8 +12,8 @@ export default function TextDiffCheckerPage() {
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "WebApplication",
-    name: "iformat.io Text Diff Checker",
-    url: "https://iformat.io/text-tools/text-diff-checker",
+    name: "subsdealer.com Text Diff Checker",
+    url: "https://www.subsdealer.com/text-tools/text-diff-checker",
     applicationCategory: "UtilityApplication",
     offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
     description: "Compare two texts and highlight differences online for free.",

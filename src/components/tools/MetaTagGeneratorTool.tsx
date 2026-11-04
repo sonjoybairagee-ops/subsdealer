@@ -15,7 +15,7 @@ export function MetaTagGeneratorTool() {
   );
   const [keywords, setKeywords] = useState("file tools, pdf editor, image compressor, css grid generator, seo tools");
   const [author, setAuthor] = useState("ToolHub Team");
-  const [canonicalUrl, setCanonicalUrl] = useState("https://iformat.io");
+  const [canonicalUrl, setCanonicalUrl] = useState("https://www.subsdealer.com");
   const [language, setLanguage] = useState("English");
   const [charset, setCharset] = useState("UTF-8");
 
@@ -24,7 +24,7 @@ export function MetaTagGeneratorTool() {
   const [ogDescription, setOgDescription] = useState(
     "Fast, secure client-side browser utilities for developers, designers, and webmasters."
   );
-  const [ogImage, setOgImage] = useState("https://iformat.io/og-cover.png");
+  const [ogImage, setOgImage] = useState("https://www.subsdealer.com/og-cover.png");
   const [ogType, setOgType] = useState("website");
   const [siteName, setSiteName] = useState("ToolHub");
   const [twitterCard, setTwitterCard] = useState<"summary_large_image" | "summary">("summary_large_image");
@@ -120,7 +120,7 @@ export const metadata: Metadata = {
   const resetDefaults = () => {
     setSiteTitle("ToolHub — Free Online Browser File Tools");
     setDescription("Free, fast, and 100% private browser tools.");
-    setCanonicalUrl("https://iformat.io");
+    setCanonicalUrl("https://www.subsdealer.com");
     setAllowIndex(true);
     setAllowFollow(true);
   };

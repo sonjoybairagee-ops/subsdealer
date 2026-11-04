@@ -12,8 +12,8 @@ export default function CaseConverterPage() {
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "WebApplication",
-    name: "iformat.io Case Converter",
-    url: "https://iformat.io/text-tools/case-converter",
+    name: "subsdealer.com Case Converter",
+    url: "https://www.subsdealer.com/text-tools/case-converter",
     applicationCategory: "UtilityApplication",
     offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
     description: "Convert text casing formats online for free.",

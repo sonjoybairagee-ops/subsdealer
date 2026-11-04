@@ -12,8 +12,8 @@ export default function SrtTimestampShifterPage() {
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "WebApplication",
-    name: "iformat.io SRT Timestamp Shifter",
-    url: "https://iformat.io/subtitle-tools/srt-timestamp-shifter",
+    name: "subsdealer.com SRT Timestamp Shifter",
+    url: "https://www.subsdealer.com/subtitle-tools/srt-timestamp-shifter",
     applicationCategory: "UtilityApplication",
     offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
     description: "Shift subtitle timestamps ahead or behind to sync with video audio.",

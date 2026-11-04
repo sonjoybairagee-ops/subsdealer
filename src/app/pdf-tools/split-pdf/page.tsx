@@ -12,8 +12,8 @@ export default function SplitPdfPage() {
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "WebApplication",
-    name: "iformat.io Split PDF",
-    url: "https://iformat.io/pdf-tools/split-pdf",
+    name: "subsdealer.com Split PDF",
+    url: "https://www.subsdealer.com/pdf-tools/split-pdf",
     applicationCategory: "MultimediaApplication",
     offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
     description: "Extract pages or ranges from PDF documents online for free.",

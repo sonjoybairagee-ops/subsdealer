@@ -12,8 +12,8 @@ export default function SubtitleLineBreakFixerPage() {
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "WebApplication",
-    name: "iformat.io Subtitle Line Break Fixer",
-    url: "https://iformat.io/subtitle-tools/subtitle-line-break-fixer",
+    name: "subsdealer.com Subtitle Line Break Fixer",
+    url: "https://www.subsdealer.com/subtitle-tools/subtitle-line-break-fixer",
     applicationCategory: "UtilityApplication",
     offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
     description: "Rebalance long subtitle lines into readable dialogues online.",

@@ -13,8 +13,8 @@ export default function ImageCropperPage() {
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "WebApplication",
-    name: "iformat.io Image Cropper",
-    url: "https://iformat.io/image-tools/image-cropper",
+    name: "subsdealer.com Image Cropper",
+    url: "https://www.subsdealer.com/image-tools/image-cropper",
     applicationCategory: "MultimediaApplication",
     offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
     description: "Crop photos online for free with instant canvas preview.",
@@ -96,7 +96,7 @@ export default function ImageCropperPage() {
               Is there any watermarking added to my cropped photo?
             </h3>
             <p className="mt-1.5 text-xs leading-relaxed text-slate-600">
-              None at all. All tools on iformat.io are 100% free with clean, un-watermarked outputs.
+              None at all. All tools on subsdealer.com are 100% free with clean, un-watermarked outputs.
             </p>
           </div>
         </div>

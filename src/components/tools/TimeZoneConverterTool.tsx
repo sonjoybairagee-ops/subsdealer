@@ -248,7 +248,7 @@ export default function TimeZoneConverterTool() {
         (c) =>
           `• ${c.city.flag} ${c.city.name} (${c.tzName}): ${c.formattedTime12} (${c.formattedDate})`
       ),
-      `\nGenerated via iformat.io Time Zone Converter`,
+      `\nGenerated via subsdealer.com Time Zone Converter`,
     ];
 
     navigator.clipboard.writeText(lines.join("\n"));

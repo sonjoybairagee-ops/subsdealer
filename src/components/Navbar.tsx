@@ -22,7 +22,7 @@ export default function Navbar() {
     <>
       <header className="sticky top-0 z-50 w-full border-b border-slate-200/80 bg-white/95 backdrop-blur-md">
         <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
-          {/* Logo matching reference iformat.io */}
+          {/* Logo matching reference subsdealer.com */}
           <div className="flex items-center gap-8">
             <Link href="/" className="group flex items-center gap-2.5">
               <div className="flex h-9 w-9 items-center justify-center rounded-full bg-gradient-to-tr from-amber-500 to-orange-500 text-white shadow-sm shadow-orange-500/20 transition-transform group-hover:scale-105">
@@ -41,7 +41,7 @@ export default function Navbar() {
                 </svg>
               </div>
               <span className="text-xl font-bold tracking-tight text-slate-900">
-                iformat<span className="text-orange-500">.io</span>
+                Subsdealer<span className="text-orange-500">.com</span>
               </span>
             </Link>
 

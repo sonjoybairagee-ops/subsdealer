@@ -13,8 +13,8 @@ export default function ImageResizerPage() {
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "WebApplication",
-    name: "iformat.io Image Resizer",
-    url: "https://iformat.io/image-tools/image-resizer",
+    name: "subsdealer.com Image Resizer",
+    url: "https://www.subsdealer.com/image-tools/image-resizer",
     applicationCategory: "MultimediaApplication",
     offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
     description: "Resize photos by dimensions, percentage, and presets online.",

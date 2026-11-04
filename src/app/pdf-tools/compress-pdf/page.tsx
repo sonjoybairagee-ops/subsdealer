@@ -12,8 +12,8 @@ export default function CompressPdfPage() {
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "WebApplication",
-    name: "iformat.io Compress PDF",
-    url: "https://iformat.io/pdf-tools/compress-pdf",
+    name: "subsdealer.com Compress PDF",
+    url: "https://www.subsdealer.com/pdf-tools/compress-pdf",
     applicationCategory: "MultimediaApplication",
     offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
     description: "Compress PDF documents online for free without uploading files to server.",

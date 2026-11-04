@@ -4,7 +4,7 @@ import Link from "next/link";
 import { Download, ChevronRight } from "lucide-react";
 
 export const metadata = {
-  title: "Free Online Media & Video Downloaders — iformat.io",
+  title: "Free Online Media & Video Downloaders — subsdealer.com",
   description:
     "Download high quality MP4 videos, MP3 audio, and HD thumbnails from YouTube, Facebook, Instagram, and Pinterest. 100% free and private.",
 };

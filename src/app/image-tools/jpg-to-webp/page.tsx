@@ -13,8 +13,8 @@ export default function JpgToWebpPage() {
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "WebApplication",
-    name: "iformat.io JPG to WebP Converter",
-    url: "https://iformat.io/image-tools/jpg-to-webp",
+    name: "subsdealer.com JPG to WebP Converter",
+    url: "https://www.subsdealer.com/image-tools/jpg-to-webp",
     applicationCategory: "MultimediaApplication",
     offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
     description: "Convert JPG to WebP online for free without uploading files to server.",

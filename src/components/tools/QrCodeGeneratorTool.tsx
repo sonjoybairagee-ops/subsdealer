@@ -10,7 +10,7 @@ export default function QrCodeGeneratorTool() {
   const [qrType, setQrType] = useState<QrType>("url");
 
   // Inputs
-  const [urlInput, setUrlInput] = useState<string>("https://iformat.io");
+  const [urlInput, setUrlInput] = useState<string>("https://www.subsdealer.com");
   const [textInput, setTextInput] = useState<string>("Hello, World!");
   const [wifiSsid, setWifiSsid] = useState<string>("MyHomeWiFi");
   const [wifiPass, setWifiPass] = useState<string>("SecretPass123");

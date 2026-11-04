@@ -4,7 +4,7 @@ import { TOOLS_DATA, CATEGORIES } from "@/lib/tools-data";
 import { Sparkles, Wrench } from "lucide-react";
 
 export const metadata: Metadata = {
-  title: "108+ Free Online Multimedia, Creator & Developer Tools — iformat.io",
+  title: "108+ Free Online Multimedia, Creator & Developer Tools — Subsdealer",
   description:
     "Explore 108 fast, private browser-based tools: video downloaders, AI auto captions, PDF editors, image converters, audio normalizers, and developer utilities.",
   alternates: {
@@ -19,7 +19,7 @@ export const metadata: Metadata = {
     "pdf tools online",
     "free audio tools",
     "developer utilities",
-    "iformat tools",
+    "Subsdealer tools",
   ],
 };
 

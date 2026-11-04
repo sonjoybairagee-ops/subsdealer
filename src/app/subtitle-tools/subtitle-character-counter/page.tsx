@@ -12,8 +12,8 @@ export default function SubtitleCharacterCounterPage() {
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "WebApplication",
-    name: "iformat.io Subtitle Character Counter",
-    url: "https://iformat.io/subtitle-tools/subtitle-character-counter",
+    name: "subsdealer.com Subtitle Character Counter",
+    url: "https://www.subsdealer.com/subtitle-tools/subtitle-character-counter",
     applicationCategory: "UtilityApplication",
     offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
     description: "Analyze subtitle reading speeds (CPS), character counts, and line lengths online.",

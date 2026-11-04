@@ -12,8 +12,8 @@ export default function SrtFormatterPage() {
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "WebApplication",
-    name: "iformat.io SRT Formatter",
-    url: "https://iformat.io/subtitle-tools/srt-formatter",
+    name: "subsdealer.com SRT Formatter",
+    url: "https://www.subsdealer.com/subtitle-tools/srt-formatter",
     applicationCategory: "UtilityApplication",
     offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
     description: "Standardize and repair broken SRT subtitle files online for free.",

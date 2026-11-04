@@ -10,7 +10,7 @@ import {
   Sparkles 
 } from "lucide-react";
 
-const SAMPLE_TEXT = `hello world! this is a quick case conversion demonstration for iformat tools.`;
+const SAMPLE_TEXT = `hello world! this is a quick case conversion demonstration for Subsdealer tools.`;
 
 export default function CaseConverterTool() {
   const [text, setText] = useState<string>("");

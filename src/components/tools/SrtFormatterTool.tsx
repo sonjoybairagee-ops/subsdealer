@@ -16,7 +16,7 @@ import {
 
 const SAMPLE_SRT = `1
 0:0:1.500 --> 0:0:4.200
-<i>Welcome to iformat.io</i> subtitle formatter!
+<i>Welcome to subsdealer.com</i> subtitle formatter!
 
 4
 00:00:05,000 --> 00:00:08,100

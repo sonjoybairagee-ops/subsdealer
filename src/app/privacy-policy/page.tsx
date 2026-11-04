@@ -1,8 +1,8 @@
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Privacy Policy | iformat.io",
-  description: "Privacy policy for iformat.io - Explaining our 100% client-side data privacy commitment.",
+  title: "Privacy Policy | subsdealer.com",
+  description: "Privacy policy for subsdealer.com - Explaining our 100% client-side data privacy commitment.",
 };
 
 export default function PrivacyPolicyPage() {
@@ -14,7 +14,7 @@ export default function PrivacyPolicyPage() {
 
         <h2 className="text-lg font-bold text-slate-900">1. Client-Side Processing Guarantee</h2>
         <p>
-          Your privacy is paramount. Unlike conventional online file converters, <strong>iformat.io does not upload, copy, or store your images or files on our servers</strong>. All image compression, formatting conversions, resizing, and cropping occur locally inside your device&apos;s browser memory via modern web APIs.
+          Your privacy is paramount. Unlike conventional online file converters, <strong>subsdealer.com does not upload, copy, or store your images or files on our servers</strong>. All image compression, formatting conversions, resizing, and cropping occur locally inside your device&apos;s browser memory via modern web APIs.
         </p>
 
         <h2 className="text-lg font-bold text-slate-900">2. Information We Do Not Collect</h2>
@@ -32,7 +32,7 @@ export default function PrivacyPolicyPage() {
 
         <h2 className="text-lg font-bold text-slate-900">4. Contact Information</h2>
         <p>
-          If you have questions regarding this Privacy Policy, please email us at <strong>privacy@iformat.io</strong>.
+          If you have questions regarding this Privacy Policy, please email us at <strong>privacy@subsdealer.com</strong>.
         </p>
       </div>
     </div>

@@ -12,8 +12,8 @@ export default function RemoveExtraSpacesPage() {
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "WebApplication",
-    name: "iformat.io Remove Extra Spaces",
-    url: "https://iformat.io/text-tools/remove-extra-spaces",
+    name: "subsdealer.com Remove Extra Spaces",
+    url: "https://www.subsdealer.com/text-tools/remove-extra-spaces",
     applicationCategory: "UtilityApplication",
     offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
     description: "Remove duplicate whitespace, trailing spaces, and blank lines from text online.",

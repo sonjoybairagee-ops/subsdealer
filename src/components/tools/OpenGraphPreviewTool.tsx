@@ -9,13 +9,13 @@ export function OpenGraphPreviewTool() {
   const [description, setDescription] = useState(
     "Supercharge your workflow with over 60 client-side utilities. Zero server upload, ultra-fast WebAssembly processing, and total privacy."
   );
-  const [url, setUrl] = useState("https://iformat.io/tools");
+  const [url, setUrl] = useState("https://www.subsdealer.com/tools");
   const [imageUrl, setImageUrl] = useState("https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=1200&h=630&fit=crop&q=80");
   const [siteName, setSiteName] = useState("ToolHub");
   const [copied, setCopied] = useState(false);
 
   // Extract domain
-  let domain = "iformat.io";
+  let domain = "subsdealer.com";
   try {
     const u = new URL(url.startsWith("http") ? url : `https://${url}`);
     domain = u.hostname;

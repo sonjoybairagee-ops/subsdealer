@@ -12,8 +12,8 @@ export default function SrtToVttPage() {
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "WebApplication",
-    name: "iformat.io SRT to VTT Converter",
-    url: "https://iformat.io/subtitle-tools/srt-to-vtt",
+    name: "subsdealer.com SRT to VTT Converter",
+    url: "https://www.subsdealer.com/subtitle-tools/srt-to-vtt",
     applicationCategory: "UtilityApplication",
     offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
     description: "Convert SubRip .SRT files to modern WebVTT .VTT files online for free.",

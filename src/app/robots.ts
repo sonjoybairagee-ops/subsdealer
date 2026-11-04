@@ -6,6 +6,6 @@ export default function robots(): MetadataRoute.Robots {
       userAgent: "*",
       allow: "/",
     },
-    sitemap: "https://iformat.io/sitemap.xml",
+    sitemap: "https://www.subsdealer.com/sitemap.xml",
   };
 }

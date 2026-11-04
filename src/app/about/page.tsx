@@ -2,8 +2,8 @@ import { Metadata } from "next";
 import { ShieldCheck, Zap, Heart } from "lucide-react";
 
 export const metadata: Metadata = {
-  title: "About Us | iformat.io",
-  description: "Learn about iformat.io and our mission to provide lightning-fast, 100% private client-side file tools.",
+  title: "About Us | subsdealer.com",
+  description: "Learn about subsdealer.com and our mission to provide lightning-fast, 100% private client-side file tools.",
 };
 
 export default function AboutPage() {
@@ -11,7 +11,7 @@ export default function AboutPage() {
     <div className="mx-auto max-w-4xl px-4 py-16 sm:px-6 lg:px-8">
       <div className="text-center mb-12">
         <h1 className="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">
-          About iformat.io
+          About subsdealer.com
         </h1>
         <p className="mt-3 text-base text-slate-600 max-w-xl mx-auto">
           Free, fast, and completely secure file utilities built directly for your browser.
@@ -21,7 +21,7 @@ export default function AboutPage() {
       <div className="rounded-3xl border border-slate-200 bg-white p-8 shadow-xs space-y-6 text-sm text-slate-700 leading-relaxed">
         <h2 className="text-xl font-bold text-slate-900">Our Mission</h2>
         <p>
-          At <strong>iformat.io</strong>, we believe file conversion, image compression, and basic editing tasks shouldn&apos;t require bulky desktop software installations or compromise your privacy by sending your personal documents and photos to untrusted third-party cloud servers.
+          At <strong>subsdealer.com</strong>, we believe file conversion, image compression, and basic editing tasks shouldn&apos;t require bulky desktop software installations or compromise your privacy by sending your personal documents and photos to untrusted third-party cloud servers.
         </p>
 
         <h2 className="text-xl font-bold text-slate-900">100% Client-Side Architecture</h2>

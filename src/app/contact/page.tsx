@@ -53,7 +53,7 @@ export default function ContactPage() {
         </form>
 
         <div className="mt-6 border-t border-slate-100 pt-6 text-center text-xs text-slate-500">
-          Direct email: <span className="font-semibold text-slate-700">support@iformat.io</span>
+          Direct email: <span className="font-semibold text-slate-700">support@subsdealer.com</span>
         </div>
       </div>
     </div>

@@ -3,7 +3,7 @@ import Link from "next/link";
 import { ArrowLeft, CheckCircle2, Sparkles, Clock, Calendar } from "lucide-react";
 
 export const metadata: Metadata = {
-  title: "How to Compress Images Without Losing Quality | iformat.io",
+  title: "How to Compress Images Without Losing Quality | subsdealer.com",
   description:
     "Learn the exact methods to compress photos and graphics without visible loss of clarity. Save bandwidth, improve Google PageSpeed, and optimize for web.",
 };

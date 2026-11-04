@@ -12,8 +12,8 @@ export default function MergePdfPage() {
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "WebApplication",
-    name: "iformat.io Merge PDF",
-    url: "https://iformat.io/pdf-tools/merge-pdf",
+    name: "subsdealer.com Merge PDF",
+    url: "https://www.subsdealer.com/pdf-tools/merge-pdf",
     applicationCategory: "MultimediaApplication",
     offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
     description: "Combine multiple PDF documents into one online for free without uploading files to server.",

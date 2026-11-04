@@ -13,8 +13,8 @@ export default function ImageCompressorPage() {
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "WebApplication",
-    name: "iformat.io Image Compressor",
-    url: "https://iformat.io/image-tools/image-compressor",
+    name: "subsdealer.com Image Compressor",
+    url: "https://www.subsdealer.com/image-tools/image-compressor",
     applicationCategory: "MultimediaApplication",
     operatingSystem: "All",
     offers: {

@@ -12,8 +12,8 @@ export default function CharacterCounterPage() {
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "WebApplication",
-    name: "iformat.io Character Counter",
-    url: "https://iformat.io/text-tools/character-counter",
+    name: "subsdealer.com Character Counter",
+    url: "https://www.subsdealer.com/text-tools/character-counter",
     applicationCategory: "UtilityApplication",
     offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
     description: "Detailed character counter and social media character limit tracker.",

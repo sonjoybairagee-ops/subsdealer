@@ -9,8 +9,8 @@ export function SerpSnippetPreviewTool() {
   const [description, setDescription] = useState(
     "Explore the top web design and SEO utilities of 2026. Compare visual builders, color checkers, grid generators, and schema tools for maximum efficiency."
   );
-  const [url, setUrl] = useState("https://iformat.io/blog/best-design-tools");
-  const [siteName, setSiteName] = useState("iformat.io");
+  const [url, setUrl] = useState("https://www.subsdealer.com/blog/best-design-tools");
+  const [siteName, setSiteName] = useState("subsdealer.com");
   const [highlightKeyword, setHighlightKeyword] = useState("design tools");
   const [showRating, setShowRating] = useState(true);
   const [ratingVal, setRatingVal] = useState("4.9");

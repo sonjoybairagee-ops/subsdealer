@@ -14,7 +14,7 @@ import {
   Sparkles 
 } from "lucide-react";
 
-const SAMPLE_TEXT = `Welcome to iformat.io! This free online word counter lets you analyze text length, calculate estimated reading and speaking time, and check keyword density in real-time. Whether you are writing a blog article, an academic paper, or a social media post, our client-side tools give you instant, secure results without storing your text on any server.`;
+const SAMPLE_TEXT = `Welcome to subsdealer.com! This free online word counter lets you analyze text length, calculate estimated reading and speaking time, and check keyword density in real-time. Whether you are writing a blog article, an academic paper, or a social media post, our client-side tools give you instant, secure results without storing your text on any server.`;
 
 export default function WordCounterTool() {
   const [text, setText] = useState<string>("");

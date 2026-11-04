@@ -13,8 +13,8 @@ export default function PngToJpgPage() {
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "WebApplication",
-    name: "iformat.io PNG to JPG Converter",
-    url: "https://iformat.io/image-tools/png-to-jpg",
+    name: "subsdealer.com PNG to JPG Converter",
+    url: "https://www.subsdealer.com/image-tools/png-to-jpg",
     applicationCategory: "MultimediaApplication",
     offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
     description: "Convert transparent PNG files to JPG online for free.",

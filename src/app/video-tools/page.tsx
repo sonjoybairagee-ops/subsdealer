@@ -4,7 +4,7 @@ import Link from "next/link";
 import { Film, ChevronRight } from "lucide-react";
 
 export const metadata = {
-  title: "Free Video Editing & Creator Tools — iformat.io",
+  title: "Free Video Editing & Creator Tools — subsdealer.com",
   description:
     "Free professional video workflow tools for creators, editors, and motion designers. AI Auto-Captions generator, Timecode calculator, social media safe zones, and YouTube utilities.",
 };

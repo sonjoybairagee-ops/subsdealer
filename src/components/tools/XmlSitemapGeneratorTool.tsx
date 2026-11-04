@@ -12,11 +12,11 @@ interface SitemapEntry {
 }
 
 const DEFAULT_URLS: SitemapEntry[] = [
-  { id: "1", url: "https://iformat.io/", lastmod: "2026-10-30", changefreq: "daily", priority: "1.0" },
-  { id: "2", url: "https://iformat.io/image-tools", lastmod: "2026-10-30", changefreq: "weekly", priority: "0.9" },
-  { id: "3", url: "https://iformat.io/pdf-tools", lastmod: "2026-10-30", changefreq: "weekly", priority: "0.9" },
-  { id: "4", url: "https://iformat.io/seo-tools", lastmod: "2026-10-30", changefreq: "weekly", priority: "0.9" },
-  { id: "5", url: "https://iformat.io/about", lastmod: "2026-10-15", changefreq: "monthly", priority: "0.5" },
+  { id: "1", url: "https://www.subsdealer.com/", lastmod: "2026-10-30", changefreq: "daily", priority: "1.0" },
+  { id: "2", url: "https://www.subsdealer.com/image-tools", lastmod: "2026-10-30", changefreq: "weekly", priority: "0.9" },
+  { id: "3", url: "https://www.subsdealer.com/pdf-tools", lastmod: "2026-10-30", changefreq: "weekly", priority: "0.9" },
+  { id: "4", url: "https://www.subsdealer.com/seo-tools", lastmod: "2026-10-30", changefreq: "weekly", priority: "0.9" },
+  { id: "5", url: "https://www.subsdealer.com/about", lastmod: "2026-10-15", changefreq: "monthly", priority: "0.5" },
 ];
 
 export function XmlSitemapGeneratorTool() {
