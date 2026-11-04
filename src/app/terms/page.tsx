@@ -1,8 +1,8 @@
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Terms of Service | subsdealer.com",
-  description: "Terms and conditions for utilizing the subsdealer.com web application and utilities.",
+  title: "Terms of Service | Subsdealer",
+  description: "Terms and conditions for utilizing the Subsdealer web application and utilities.",
 };
 
 export default function TermsPage() {
@@ -14,17 +14,17 @@ export default function TermsPage() {
 
         <h2 className="text-lg font-bold text-slate-900">1. Acceptance of Terms</h2>
         <p>
-          By accessing or using subsdealer.com (&ldquo;Service&rdquo;), you agree to be bound by these Terms of Service. If you do not agree to these terms, please refrain from using our service.
+          By accessing or using Subsdealer (&ldquo;Service&rdquo;), you agree to be bound by these Terms of Service. If you do not agree to these terms, please refrain from using our service.
         </p>
 
         <h2 className="text-lg font-bold text-slate-900">2. Description of Service</h2>
         <p>
-          subsdealer.com provides client-side file conversion, compression, and image manipulation tools free of charge directly within your browser.
+          Subsdealer provides client-side file conversion, compression, and image manipulation tools free of charge directly within your browser.
         </p>
 
         <h2 className="text-lg font-bold text-slate-900">3. Intellectual Property Rights</h2>
         <p>
-          You retain full ownership of all images and materials you process through the Service. subsdealer.com claims no intellectual property rights over any user-supplied content.
+          You retain full ownership of all images and materials you process through the Service. Subsdealer claims no intellectual property rights over any user-supplied content.
         </p>
 
         <h2 className="text-lg font-bold text-slate-900">4. Disclaimer of Warranties</h2>

@@ -41,7 +41,7 @@ export default function Navbar() {
                 </svg>
               </div>
               <span className="text-xl font-bold tracking-tight text-slate-900">
-                Subsdealer<span className="text-orange-500">.com</span>
+                Subs<span className="text-orange-500">dealer</span>
               </span>
             </Link>
 

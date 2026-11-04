@@ -54,7 +54,7 @@ export default function Footer() {
                 </svg>
               </div>
               <span className="text-lg font-bold text-slate-900">
-                Subsdealer<span className="text-orange-500">.com</span>
+                Subs<span className="text-orange-500">dealer</span>
               </span>
             </Link>
             <p className="mt-3 text-xs leading-relaxed text-slate-500 max-w-sm">
@@ -167,7 +167,7 @@ export default function Footer() {
         </div>
 
         <div className="mt-10 border-t border-slate-200/60 pt-6 flex flex-col sm:flex-row items-center justify-between text-xs text-slate-500 gap-4">
-          <p>© 2026 subsdealer.com. All rights reserved.</p>
+          <p>© 2026 Subsdealer. All rights reserved.</p>
           <p className="flex items-center gap-1">
             Built for maximum privacy and performance with Next.js
           </p>
