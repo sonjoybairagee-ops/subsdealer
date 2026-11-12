@@ -65,7 +65,8 @@ import {
   Video,
   Mic,
   FastForward,
-  Download
+  Download,
+  Zap
 } from "lucide-react";
 
 interface ToolCardProps {
@@ -77,6 +78,8 @@ export default function ToolCard({ tool }: ToolCardProps) {
     switch (tool.iconName) {
       case "Download":
         return <Download className="h-6 w-6" />;
+      case "Zap":
+        return <Zap className="h-6 w-6" />;
       case "Video":
         return <Video className="h-6 w-6" />;
       case "Mic":

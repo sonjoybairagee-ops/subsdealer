@@ -22,6 +22,7 @@ import {
 } from "lucide-react";
 import { encodeWav } from "@/lib/audio-file-utils";
 import { spectralDenoiseAudio, getSharedAudioContext } from "@/lib/spectral-denoise";
+import { processAudioBufferWithRnnoise } from "@/lib/rnnoise-engine";
 
 type PresetType = "studio" | "noise-cut" | "clarity" | "custom";
 
@@ -112,8 +113,8 @@ export default function VoiceEnhancerTool() {
   const [broadcastLeveling, setBroadcastLeveling] = useState<boolean>(true);
   const [showAdvanced, setShowAdvanced] = useState<boolean>(false);
 
-  // Engine Mode: Defaults to in-browser Turbo DSP (guaranteed 100% available with zero setup)
-  const [engineMode, setEngineMode] = useState<"ai" | "dsp">("dsp");
+  // Engine Mode: Defaults to in-browser RNNoise WebAssembly (RNN Neural Network, 100% private & zero setup)
+  const [engineMode, setEngineMode] = useState<"rnnoise" | "dsp" | "ai">("rnnoise");
   const [aiStatus, setAiStatus] = useState<{
     online: boolean;
     gpu?: boolean;
@@ -144,15 +145,12 @@ export default function VoiceEnhancerTool() {
             gpu: data.details?.gpu,
             name: data.details?.name || "Tesla T4 GPU",
           });
-          setEngineMode("ai");
         } else {
           setAiStatus({ online: false });
-          setEngineMode("dsp"); // Seamlessly default to Turbo in-browser DSP
         }
       })
       .catch(() => {
         setAiStatus({ online: false });
-        setEngineMode("dsp");
       });
   }, []);
 
@@ -221,7 +219,7 @@ export default function VoiceEnhancerTool() {
     }
   }, [activeTrack, isMuted]);
 
-  // DSP Audio Processing Engine (Multi-Stage Spectral Noise Reduction & Voice Enhancement)
+  // Audio Processing Engine: RNNoise Neural Wasm or Turbo Spectral DSP + Studio Vocal EQ
   const processAudioBuffer = useCallback(
     async (
       buffer: AudioBuffer,
@@ -230,23 +228,46 @@ export default function VoiceEnhancerTool() {
       hpFreq: number,
       warmth: number,
       deMuffle: number,
-      leveling: boolean
+      leveling: boolean,
+      modeOverride?: "rnnoise" | "dsp"
     ) => {
       setIsProcessing(true);
-      setProgressMsg("Applying deep spectral noise eradication & studio vocal enhancement...");
+      const activeMode = modeOverride || (engineMode === "ai" ? "rnnoise" : engineMode);
 
       try {
-        // Yield to browser UI thread so spinner renders
         await new Promise((r) => setTimeout(r, 40));
 
-        const cleanedBuffer = spectralDenoiseAudio(buffer, {
-          noiseReductionStrength: nrStrength,
-          vocalClarityBoost: clarity,
-          highPassRumbleCutHz: hpFreq,
-          warmthBoost: warmth,
-          roomDeMuffle: deMuffle,
-          broadcastLeveling: leveling,
-        });
+        let cleanedBuffer: AudioBuffer;
+
+        if (activeMode === "rnnoise") {
+          setProgressMsg("Eradicating noise with RNNoise Neural Network (Wasm)...");
+          const rnResult = await processAudioBufferWithRnnoise(buffer, {
+            strength: nrStrength,
+            stereoMode: "stereo",
+            onProgress: (pct, msg) => setProgressMsg(msg),
+          });
+
+          // Apply Studio Vocal EQ & Leveling on top of the RNNoise-cleaned speech
+          setProgressMsg("Applying broadcast chest warmth, clarity EQ & leveling...");
+          cleanedBuffer = spectralDenoiseAudio(rnResult.cleanedBuffer, {
+            noiseReductionStrength: 0, // Background noise is already eliminated by RNNoise!
+            vocalClarityBoost: clarity,
+            highPassRumbleCutHz: hpFreq,
+            warmthBoost: warmth,
+            roomDeMuffle: deMuffle,
+            broadcastLeveling: leveling,
+          });
+        } else {
+          setProgressMsg("Applying deep spectral noise eradication & studio vocal enhancement...");
+          cleanedBuffer = spectralDenoiseAudio(buffer, {
+            noiseReductionStrength: nrStrength,
+            vocalClarityBoost: clarity,
+            highPassRumbleCutHz: hpFreq,
+            warmthBoost: warmth,
+            roomDeMuffle: deMuffle,
+            broadcastLeveling: leveling,
+          });
+        }
 
         const wavBlob = encodeWav(cleanedBuffer);
         if (enhancedAudioUrl) URL.revokeObjectURL(enhancedAudioUrl);
@@ -261,7 +282,7 @@ export default function VoiceEnhancerTool() {
         setIsProcessing(false);
       }
     },
-    [enhancedAudioUrl]
+    [enhancedAudioUrl, engineMode]
   );
 
   const applyPreset = (presetId: PresetType) => {
@@ -287,7 +308,7 @@ export default function VoiceEnhancerTool() {
     }
   };
 
-  const reprocessWithCurrentSettings = () => {
+  const reprocessWithCurrentSettings = (modeOverride?: "rnnoise" | "dsp") => {
     if (rawAudioBufferRef.current) {
       processAudioBuffer(
         rawAudioBufferRef.current,
@@ -296,7 +317,8 @@ export default function VoiceEnhancerTool() {
         highPassFreq,
         warmthBoost,
         roomDeMuffle,
-        broadcastLeveling
+        broadcastLeveling,
+        modeOverride
       );
     }
   };
@@ -305,8 +327,12 @@ export default function VoiceEnhancerTool() {
     const file = e.target.files?.[0];
     if (!file) return;
 
-    if (!file.type.startsWith("audio/") && !/\.(mp3|wav|m4a|aac|ogg|flac|webm)$/i.test(file.name)) {
-      setError("Please select a supported audio file (MP3, WAV, M4A, AAC, OGG).");
+    if (
+      !file.type.startsWith("audio/") &&
+      !file.type.startsWith("video/") &&
+      !/\.(mp3|wav|m4a|aac|ogg|flac|webm|mp4|mov|mkv)$/i.test(file.name)
+    ) {
+      setError("Please select a supported audio or video file (MP3, WAV, M4A, AAC, MP4, WebM, MOV).");
       return;
     }
 
@@ -339,12 +365,12 @@ export default function VoiceEnhancerTool() {
       rawAudioBufferRef.current = decodedBuffer;
       setDuration(decodedBuffer.duration);
     } catch {
-      setError("Could not decode audio file. Please try another MP3 or WAV file.");
+      setError("Could not decode audio file. Please try another MP3, WAV or video file.");
       setIsProcessing(false);
       return;
     }
 
-    // Step 2: Try AI Deep Neural Engine (DeepFilterNet 3) if AI mode is selected
+    // Step 2: Try AI Deep Neural Engine (DeepFilterNet 3) if Cloud GPU mode is selected
     if (engineMode === "ai") {
       setProgressMsg("Sending to AI Neural Model (DeepFilterNet 3 GPU)...");
       try {
@@ -390,15 +416,19 @@ export default function VoiceEnhancerTool() {
           setProgressMsg("Enhanced with DeepFilterNet 3 AI Neural Network!");
           return;
         } else {
-          console.warn("AI Backend unavailable or offline. Falling back to In-Browser Turbo DSP.");
+          console.warn("AI Backend unavailable or offline. Falling back to RNNoise Wasm Neural Network.");
         }
       } catch (e) {
-        console.warn("AI Backend request failed, falling back to In-Browser Turbo DSP:", e);
+        console.warn("AI Backend request failed, falling back to RNNoise Wasm Neural Network:", e);
       }
     }
 
-    // Step 3: In-Browser Turbo Audio Engine (Zero-latency DSP, 100% reliable)
-    setProgressMsg("Processing with In-Browser Turbo Audio Engine...");
+    // Step 3: RNNoise Wasm or Turbo Audio Engine (In-Browser WebAssembly, 100% reliable)
+    setProgressMsg(
+      engineMode === "dsp"
+        ? "Processing with In-Browser Turbo Audio Engine..."
+        : "Processing with RNNoise WebAssembly RNN Neural Network..."
+    );
     try {
       const p = PRESETS[selectedPreset];
       await processAudioBuffer(
@@ -408,7 +438,8 @@ export default function VoiceEnhancerTool() {
         p.highPassFreq,
         p.warmthBoost,
         p.roomDeMuffle,
-        p.broadcastLeveling
+        p.broadcastLeveling,
+        engineMode === "dsp" ? "dsp" : "rnnoise"
       );
     } catch {
       setError("Could not process audio. Please try another file.");
@@ -653,7 +684,7 @@ export default function VoiceEnhancerTool() {
             <input
               ref={fileInputRef}
               type="file"
-              accept="audio/*"
+              accept="audio/*,video/*"
               onChange={handleFileUpload}
               className="hidden"
             />
@@ -709,22 +740,31 @@ export default function VoiceEnhancerTool() {
           <div className="text-xs">
             <div className="flex items-center gap-2">
               <span className="font-bold text-[#e7eee9]">Processing Engine:</span>
-              {engineMode === "ai" && aiStatus?.online ? (
+              {engineMode === "rnnoise" && (
                 <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[10px] font-semibold bg-emerald-500/15 text-emerald-400 border border-emerald-500/30">
                   <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse" />
-                  AI GPU: {aiStatus.name} Online
+                  RNNoise WebAssembly Active (100% In-Browser RNN Neural Network)
                 </span>
-              ) : (
+              )}
+              {engineMode === "dsp" && (
                 <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold bg-emerald-950/60 text-emerald-400 border border-emerald-800/40">
                   <Zap className="h-3 w-3 text-emerald-400" />
-                  In-Browser Turbo DSP Active (Zero Setup Required)
+                  Turbo Spectral DSP Active (Instant)
+                </span>
+              )}
+              {engineMode === "ai" && (
+                <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[10px] font-semibold bg-sky-500/15 text-sky-400 border border-sky-500/30">
+                  <Sparkles className="h-3 w-3 text-sky-400" />
+                  {aiStatus?.online ? `AI GPU: ${aiStatus.name} Online` : "Remote Cloud GPU"}
                 </span>
               )}
             </div>
             <span className="text-[11px] text-[#9baaa1]">
-              {engineMode === "ai"
-                ? "🧠 DeepFilterNet 3 AI Neural Network (Colab Cloud GPU)"
-                : "⚡ 100% Client-Side Pure Web Audio DSP (Private, Instant &amp; Zero Latency)"}
+              {engineMode === "rnnoise"
+                ? "🧠 RNNoise Recurrent Neural Network (Mozilla/Xiph Wasm, Zero Setup, Real-Time)"
+                : engineMode === "dsp"
+                ? "⚡ Pure Web Audio Multi-Stage Wiener Spectral Filter (Instant & Zero Latency)"
+                : "☁️ DeepFilterNet 3 Neural Model on External GPU (Colab Cloud)"}
             </span>
           </div>
 
@@ -733,19 +773,37 @@ export default function VoiceEnhancerTool() {
               <button
                 type="button"
                 onClick={() => {
-                  setEngineMode("dsp");
-                  if (rawAudioBufferRef.current && engineMode !== "dsp") {
-                    reprocessWithCurrentSettings();
+                  setEngineMode("rnnoise");
+                  if (rawAudioBufferRef.current && engineMode !== "rnnoise") {
+                    reprocessWithCurrentSettings("rnnoise");
                   }
                 }}
-                className={`flex items-center gap-1.5 rounded-xl px-4 py-2 transition-all cursor-pointer ${
+                className={`flex items-center gap-1.5 rounded-xl px-3.5 py-2 transition-all cursor-pointer ${
+                  engineMode === "rnnoise"
+                    ? "bg-[#3cff5f] text-[#050a08] font-bold shadow-md shadow-[#3cff5f]/20"
+                    : "text-[#9baaa1] hover:text-[#e7eee9]"
+                }`}
+              >
+                <Sparkles className="h-3.5 w-3.5" />
+                <span>RNNoise AI (Wasm)</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => {
+                  setEngineMode("dsp");
+                  if (rawAudioBufferRef.current && engineMode !== "dsp") {
+                    reprocessWithCurrentSettings("dsp");
+                  }
+                }}
+                className={`flex items-center gap-1.5 rounded-xl px-3.5 py-2 transition-all cursor-pointer ${
                   engineMode === "dsp"
                     ? "bg-[#3cff5f] text-[#050a08] font-bold shadow-md shadow-[#3cff5f]/20"
                     : "text-[#9baaa1] hover:text-[#e7eee9]"
                 }`}
               >
                 <Zap className="h-3.5 w-3.5" />
-                <span>In-Browser Turbo (Instant)</span>
+                <span>Turbo DSP</span>
               </button>
 
               <button
@@ -759,14 +817,14 @@ export default function VoiceEnhancerTool() {
                     loadAndEnhanceAudio(audioFile);
                   }
                 }}
-                className={`flex items-center gap-1.5 rounded-xl px-4 py-2 transition-all cursor-pointer ${
+                className={`flex items-center gap-1.5 rounded-xl px-3.5 py-2 transition-all cursor-pointer ${
                   engineMode === "ai"
                     ? "bg-[#3cff5f] text-[#050a08] font-bold shadow-md shadow-[#3cff5f]/20"
                     : "text-[#9baaa1] hover:text-[#e7eee9]"
                 }`}
               >
-                <Sparkles className="h-3.5 w-3.5" />
-                <span>AI Neural GPU</span>
+                <Radio className="h-3.5 w-3.5" />
+                <span>Cloud GPU</span>
               </button>
             </div>
 
@@ -1024,7 +1082,7 @@ export default function VoiceEnhancerTool() {
             <div className="sm:col-span-3 flex justify-end pt-2">
               <button
                 type="button"
-                onClick={reprocessWithCurrentSettings}
+                onClick={() => reprocessWithCurrentSettings()}
                 className="inline-flex items-center gap-1.5 rounded-xl bg-[#3cff5f] text-[#050a08] px-4 py-2 text-xs font-bold shadow-md shadow-[#3cff5f]/20 cursor-pointer hover:bg-[#48ff69] transition-all"
               >
                 <Sparkles className="h-3.5 w-3.5" />
